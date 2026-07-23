@@ -137,20 +137,20 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
                 <a href="/bedroom" className="block">Bedroom</a>
               </li>
               <li className="px-4 py-3 hover:bg-zinc-100 hover:text-red-600 transition duration-150">
-                <a href="#" className="block">Dining</a>
+                <a href="/dining" className="block">Dining</a>
               </li>
               <li className="px-4 py-3 hover:bg-zinc-100 hover:text-red-600 transition duration-150">
-                <a href="#" className="block">Office Furniture</a>
+                <a href="/office-furniture" className="block">Office Furniture</a>
               </li>
               <li className="px-4 py-3 hover:bg-zinc-100 hover:text-red-600 transition duration-150">
-                <a href="#" className="block">Plastic Products</a>
+                <a href="/plastic-products" className="block">Plastic Products</a>
               </li>
               <li className="px-4 py-3 hover:bg-zinc-100 hover:text-red-600 transition duration-150">
-                <a href="#" className="block">Electrics</a>
+                <a href="/electrics" className="block">Electrics</a>
               </li>
               {/* Highlighted item matching image */}
               <li className="bg-[#b5d614] px-6 py-3 text-slate-950 font-bold hover:bg-[#a4c212] transition duration-150">
-                <a href="#" className="block">Budget Furniture</a>
+                <a href="/budget-items" className="block">Budget Items</a>
               </li>
             </ul>
           </div>
