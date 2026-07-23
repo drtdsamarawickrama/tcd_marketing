@@ -15,11 +15,11 @@ try {
     echo "<h3>Setting up Damro TCD Marketing Database...</h3>";
 
     // Create database if it does not exist
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS `damro_tcd_marketing` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    echo "✔ Database `damro_tcd_marketing` checked/created.<br>";
+    $pdo->exec("CREATE DATABASE IF NOT EXISTS `tcd_marketing` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    echo "✔ Database `tcd_marketing` checked/created.<br>";
 
     // Connect to the specific database
-    $pdo->exec("USE `damro_tcd_marketing`");
+    $pdo->exec("USE `tcd_marketing`");
 
     // Create table items if it does not exist
     $sql_table = "CREATE TABLE IF NOT EXISTS `items` (

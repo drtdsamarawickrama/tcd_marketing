@@ -3,7 +3,6 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE");
-header("Content-Type: application/json; charset=UTF-8");
 
 // Handle OPTIONS preflight requests for CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -14,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Database configuration settings
 $db_host = "localhost";
 $db_user = "root";
-$db_pass = "";
-$db_name = "damro_tcd_marketing";
+$db_pass = "root123";
+$db_name = "tcd_marketing"; // Updated by user database name change
 
 try {
     // Establish PDO database connection

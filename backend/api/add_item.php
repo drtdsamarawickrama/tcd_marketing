@@ -2,6 +2,9 @@
 // Include database connection settings
 require_once '../config.php';
 
+// Set response type as JSON
+header("Content-Type: application/json; charset=UTF-8");
+
 // Check if this is a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

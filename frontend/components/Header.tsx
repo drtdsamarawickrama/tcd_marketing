@@ -20,15 +20,13 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
             <span className="hidden md:inline">🕒 Hours: 9.00 AM - 6.00 PM</span>
           </div>
           <div className="flex flex-wrap gap-2 md:gap-3 items-center text-[11px] font-medium text-slate-700">
-            <a href="#" className="hover:text-red-600 transition">About Us</a>
+            <a href="/about-us" className="hover:text-red-600 transition">About Us</a>
             <span className="text-zinc-300">|</span>
-            <a href="#" className="hover:text-red-600 transition">Corporate Inquiry</a>
+            <a href="/corporate-inquiry" className="hover:text-red-600 transition">Corporate Inquiry</a>
             <span className="text-zinc-300">|</span>
-            <a href="#" className="hover:text-red-600 transition">Store Locator</a>
+            <a href="/gallery" className="hover:text-red-600 transition">Gallery</a>
             <span className="text-zinc-300">|</span>
-            <a href="#" className="hover:text-red-600 transition">Gallery</a>
-            <span className="text-zinc-300">|</span>
-            <a href="#" className="hover:text-red-600 transition">Contact Us</a>
+            <a href="/contact-us" className="hover:text-red-600 transition">Contact Us</a>
             <span className="text-zinc-300">|</span>
             <div className="flex gap-1.5 ml-1">
               <span className="font-semibold text-red-600 cursor-pointer">EN</span>

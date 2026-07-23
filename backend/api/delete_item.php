@@ -2,6 +2,9 @@
 // Include database connection settings
 require_once '../config.php';
 
+// Set response type as JSON
+header("Content-Type: application/json; charset=UTF-8");
+
 // Accept request parameters from POST or GET
 $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : 0;
 

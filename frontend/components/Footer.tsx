@@ -32,9 +32,8 @@ export default function Footer() {
           <ul className="space-y-2.5">
             <li><a href="#" className="hover:text-white transition">Warranty Information</a></li>
             <li><a href="#" className="hover:text-white transition">Terms & Conditions</a></li>
-            <li><a href="#" className="hover:text-white transition">Locate Our Showrooms</a></li>
             <li><a href="#" className="hover:text-white transition">Online Order Tracking</a></li>
-            <li><a href="#" className="hover:text-white transition">Corporate Inquiry</a></li>
+            <li><a href="/corporate-inquiry" className="hover:text-white transition">Corporate Inquiry</a></li>
           </ul>
         </div>
 
