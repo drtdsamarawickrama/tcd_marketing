@@ -15,6 +15,10 @@ export interface Product {
   tag?: string | null; // Featured Placement Tag ('best', 'new', 'offer')
   subcategory?: string | null; // Optional subcategory (e.g. 'sofa-sets')
   icon: string;
+  description?: string | null;
+  dimensions?: string | null;
+  warranty?: string | null;
+  additional_images?: string | null; // JSON string containing array of gallery image URLs
 }
 
 /**

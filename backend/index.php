@@ -100,13 +100,26 @@ $gradient_presets = [
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col lg:flex-row">
+
+    <!-- Mobile Top Navigation (Visible on mobile/tablet only) -->
+    <div class="flex lg:hidden items-center justify-between bg-slate-900 text-white p-4 sticky top-0 z-40 border-b border-slate-800">
+        <h2 class="text-lg font-black tracking-tight">TCD<span class="text-red-600"> Marketing</span></h2>
+        <button id="toggle-sidebar-btn" class="text-slate-400 hover:text-white p-2 bg-slate-800 rounded-lg focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Dark Overlay Backdrop for Mobile Sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden transition-opacity duration-300"></div>
 
     <!-- Dynamic sidebar template include -->
     <?php include 'includes/sidebar.php'; ?>
 
     <!-- Main Workspace dashboard area -->
-    <div class="flex-1 ml-72 p-10 max-w-7xl flex flex-col gap-8">
+    <div class="flex-grow flex-1 ml-0 lg:ml-72 p-4 sm:p-8 lg:p-10 max-w-full flex flex-col gap-8">
         <div class="flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Item Management</h1>
@@ -142,7 +155,7 @@ $gradient_presets = [
     </div>
 
     <!-- Container for dynamic alert toasts -->
-    <div class="toast-container fixed top-6 right-6 z-[1000] flex flex-col gap-2.5" id="toast-box"></div>
+    <div class="toast-container fixed top-6 right-6 z-1000 flex flex-col gap-2.5" id="toast-box"></div>
 
     <!-- Pure Javascript logics for Dashboard -->
     <script src="assets/js/dashboard.js"></script>

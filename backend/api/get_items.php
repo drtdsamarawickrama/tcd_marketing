@@ -5,10 +5,32 @@ require_once '../config.php';
 // Set response type as JSON
 header("Content-Type: application/json; charset=UTF-8");
 
-// Check if a specific category was requested
+// Check if a specific ID or category was requested
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $category = isset($_GET['category']) ? trim($_GET['category']) : '';
 
 try {
+    if ($id > 0) {
+        // Query to fetch a single item by ID
+        $stmt = $pdo->prepare("SELECT * FROM `items` WHERE `id` = :id");
+        $stmt->execute(['id' => $id]);
+        $item = $stmt->fetch();
+        
+        if ($item) {
+            echo json_encode([
+                "success" => true,
+                "data" => $item
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode([
+                "success" => false,
+                "message" => "Product not found."
+            ]);
+        }
+        exit();
+    }
+
     if ($category !== '') {
         // Query to fetch items of a specific category
         $stmt = $pdo->prepare("SELECT * FROM `items` WHERE `category` = :category ORDER BY `id` DESC");

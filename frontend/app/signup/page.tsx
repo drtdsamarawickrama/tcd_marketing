@@ -1,0 +1,257 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/useAuth";
+
+// Calculate password strength score (0-4) for the strength meter bar
+function getPasswordStrength(password: string): number {
+  let score = 0;
+  if (password.length >= 6)  score++;  // Minimum length
+  if (password.length >= 10) score++;  // Longer is better
+  if (/[A-Z]/.test(password)) score++; // Has uppercase
+  if (/[0-9]/.test(password)) score++; // Has number
+  return score;
+}
+
+// Strength label and color matching the score level
+const strengthConfig = [
+  { label: "",        color: "" },
+  { label: "Weak",    color: "bg-red-500" },
+  { label: "Fair",    color: "bg-orange-500" },
+  { label: "Good",    color: "bg-yellow-500" },
+  { label: "Strong",  color: "bg-green-500" },
+];
+
+export default function SignupPage() {
+  const router = useRouter();
+  const { register, isLoggedIn, loading } = useAuth();
+
+  const [username, setUsername]         = useState("");
+  const [email, setEmail]               = useState("");
+  const [password, setPassword]         = useState("");
+  const [confirmPass, setConfirmPass]   = useState("");
+  const [showPass, setShowPass]         = useState(false);
+  const [showConfirm, setShowConfirm]   = useState(false);
+  const [error, setError]               = useState("");
+  const [success, setSuccess]           = useState("");
+  const [submitting, setSubmitting]     = useState(false);
+
+  // Redirect to home if already logged in
+  useEffect(() => {
+    if (!loading && isLoggedIn) {
+      router.replace("/");
+    }
+  }, [isLoggedIn, loading, router]);
+
+  const passwordStrength = getPasswordStrength(password);
+  const strengthInfo = strengthConfig[passwordStrength] || strengthConfig[0];
+
+  // Handle signup form submission
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    // Client-side validation before hitting the API
+    if (password !== confirmPass) {
+      setError("Passwords do not match. Please check and try again.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    setSubmitting(true);
+    const result = await register(username.trim(), email.trim(), password);
+
+    if (result.success) {
+      setSuccess("Account created! Redirecting to login...");
+      // Redirect to login page after 1.5 seconds
+      setTimeout(() => router.push("/login"), 1500);
+    } else {
+      setError(result.message);
+    }
+    setSubmitting(false);
+  }
+
+  if (loading) return null;
+
+  return (
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-10 relative overflow-hidden">
+
+      {/* Animated background blobs */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+
+      {/* Signup Card */}
+      <div className="w-full max-w-md relative z-10">
+
+        {/* Brand header */}
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-block">
+            <img src="/logo.jpeg" alt="TCD Marketing" className="h-14 w-auto mx-auto rounded-lg object-contain" />
+          </Link>
+          <h1 className="text-2xl font-black text-white mt-4 tracking-tight">Create Account</h1>
+          <p className="text-slate-400 text-sm mt-1">Join TCD Marketing - Sri Lanka&apos;s trusted furniture store</p>
+        </div>
+
+        {/* Glass Card */}
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
+            {/* Error Box */}
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+                <span>⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Success Box */}
+            {success && (
+              <div className="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+                <span>✅</span>
+                <span>{success}</span>
+              </div>
+            )}
+
+            {/* Username Input */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                required
+                minLength={3}
+                maxLength={30}
+                placeholder="e.g. john_perera"
+                className="w-full bg-white/5 border border-white/10 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition"
+              />
+              <p className="text-[11px] text-slate-600">3-30 characters, letters, numbers and underscores only</p>
+            </div>
+
+            {/* Email Input */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                className="w-full bg-white/5 border border-white/10 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition"
+              />
+            </div>
+
+            {/* Password Input with strength meter */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Password</label>
+              <div className="relative">
+                <input
+                  type={showPass ? "text" : "password"}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  placeholder="At least 6 characters"
+                  className="w-full bg-white/5 border border-white/10 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none focus:border-red-500 transition"
+                />
+                <button type="button" onClick={() => setShowPass(!showPass)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition text-xs font-bold">
+                  {showPass ? "HIDE" : "SHOW"}
+                </button>
+              </div>
+              {/* Password strength meter bar - shows 4 segments filling up */}
+              {password && (
+                <div className="flex gap-1 mt-1">
+                  {[1, 2, 3, 4].map(level => (
+                    <div
+                      key={level}
+                      className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                        level <= passwordStrength ? strengthInfo.color : "bg-white/10"
+                      }`}
+                    ></div>
+                  ))}
+                  <span className={`text-[11px] font-bold ml-1 ${
+                    passwordStrength <= 1 ? "text-red-400" :
+                    passwordStrength === 2 ? "text-orange-400" :
+                    passwordStrength === 3 ? "text-yellow-400" : "text-green-400"
+                  }`}>{strengthInfo.label}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Confirm Password Input */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  value={confirmPass}
+                  onChange={e => setConfirmPass(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  placeholder="Repeat your password"
+                  className={`w-full bg-white/5 border text-white placeholder:text-slate-600 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none transition ${
+                    confirmPass && confirmPass !== password
+                      ? "border-red-500/60"
+                      : confirmPass && confirmPass === password
+                      ? "border-green-500/60"
+                      : "border-white/10 focus:border-red-500"
+                  }`}
+                />
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition text-xs font-bold">
+                  {showConfirm ? "HIDE" : "SHOW"}
+                </button>
+              </div>
+              {/* Show match indicator */}
+              {confirmPass && (
+                <p className={`text-[11px] font-semibold ${confirmPass === password ? "text-green-400" : "text-red-400"}`}>
+                  {confirmPass === password ? "✓ Passwords match" : "✗ Passwords do not match"}
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-900 text-white font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-red-900/30 flex items-center justify-center gap-2 mt-1"
+            >
+              {submitting ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  <span>Creating Account...</span>
+                </>
+              ) : (
+                "Create My Account"
+              )}
+            </button>
+
+          </form>
+
+          {/* Link to Login */}
+          <p className="text-center text-slate-500 text-sm mt-6">
+            Already have an account?{" "}
+            <Link href="/login" className="text-red-400 font-bold hover:text-red-300 transition">
+              Sign In
+            </Link>
+          </p>
+        </div>
+
+        <p className="text-center mt-6">
+          <Link href="/" className="text-slate-600 hover:text-slate-400 text-xs transition">
+            ← Back to TCD Marketing
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}

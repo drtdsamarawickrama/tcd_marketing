@@ -54,6 +54,7 @@ export default function BudgetItemsPage() {
               products.map((prod) => (
                 <ProductCard
                   key={prod.id}
+                  id={prod.id}
                   name={prod.name}
                   price={prod.price}
                   oldPrice={prod.old_price || undefined}

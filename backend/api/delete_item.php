@@ -18,11 +18,12 @@ if ($id <= 0) {
 }
 
 try {
-    // Check if the item exists first
-    $check_stmt = $pdo->prepare("SELECT `id` FROM `items` WHERE `id` = :id");
+    // Fetch image URLs before deleting (to clean up uploaded files from disk)
+    $check_stmt = $pdo->prepare("SELECT `id`, `image`, `additional_images` FROM `items` WHERE `id` = :id");
     $check_stmt->execute(['id' => $id]);
+    $existingItem = $check_stmt->fetch(PDO::FETCH_ASSOC);
     
-    if (!$check_stmt->fetch()) {
+    if (!$existingItem) {
         http_response_code(404);
         echo json_encode([
             "success" => false,
@@ -30,8 +31,35 @@ try {
         ]);
         exit();
     }
-    
-    // Prepare and execute deletion query
+
+    // Helper: delete a file from uploads/ folder if it was uploaded to our server (not an external URL)
+    function deleteUploadedFile($imageUrl) {
+        if (empty($imageUrl)) return;
+        // Only delete files that point to our own uploads/ directory
+        if (strpos($imageUrl, '/uploads/') !== false) {
+            // Extract just the filename from the full URL
+            $filename = basename(parse_url($imageUrl, PHP_URL_PATH));
+            $filePath = __DIR__ . '/../uploads/' . $filename;
+            if (file_exists($filePath)) {
+                unlink($filePath); // Remove physical file from disk
+            }
+        }
+    }
+
+    // Delete main product image from uploads/ if it was locally uploaded
+    deleteUploadedFile($existingItem['image']);
+
+    // Delete all gallery images from uploads/ folder
+    if (!empty($existingItem['additional_images'])) {
+        $galleryImages = json_decode($existingItem['additional_images'], true);
+        if (is_array($galleryImages)) {
+            foreach ($galleryImages as $galleryUrl) {
+                deleteUploadedFile($galleryUrl);
+            }
+        }
+    }
+
+    // Now delete the database record after files are cleaned up
     $delete_stmt = $pdo->prepare("DELETE FROM `items` WHERE `id` = :id");
     $delete_stmt->execute(['id' => $id]);
     

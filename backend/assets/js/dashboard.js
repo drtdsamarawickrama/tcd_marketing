@@ -382,7 +382,7 @@ function renderItems() {
 
         const cardHTML = `
             <div class="bg-white border border-zinc-200 rounded-lg overflow-hidden group hover:shadow-lg transition-all duration-200 flex flex-col justify-between shadow-sm relative" id="card-${item.id}">
-                <div class="h-44 bg-gradient-to-br ${item.image_bg} relative flex items-center justify-center overflow-hidden">
+                <div class="h-44 bg-linear-to-br ${item.image_bg} relative flex items-center justify-center overflow-hidden">
                     ${badgeHTML}
                     ${imageHTML}
                     <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xs flex flex-col gap-2.5 items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
@@ -394,9 +394,9 @@ function renderItems() {
                         </button>
                     </div>
                 </div>
-                <div class="p-4 flex-grow flex flex-col justify-between">
+                <div class="p-4 grow flex flex-col justify-between">
                     <div>
-                        <h3 class="text-sm font-bold text-slate-800 line-clamp-2 min-h-[40px] leading-tight">${item.name}</h3>
+                        <h3 class="text-sm font-bold text-slate-800 line-clamp-2 min-h-10 leading-tight">${item.name}</h3>
                         <div class="flex gap-0.5 text-amber-500 mt-2 text-xs">${ratingStars}</div>
                     </div>
                     <div class="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between">
@@ -470,6 +470,23 @@ window.editItem = function(id) {
     document.getElementById('subcategory').value = item.subcategory || '';
     document.getElementById('icon').value = item.icon;
     document.getElementById('image_bg').value = item.image_bg;
+    document.getElementById('description').value = item.description || '';
+    document.getElementById('dimensions').value = item.dimensions || '';
+    document.getElementById('warranty').value = item.warranty || '';
+
+    // Fill gallery_urls textarea from additional_images JSON array (one URL per line)
+    if (item.additional_images) {
+        try {
+            const galleryArr = JSON.parse(item.additional_images);
+            document.getElementById('gallery_urls').value = Array.isArray(galleryArr) ? galleryArr.join('\n') : '';
+        } catch(e) {
+            document.getElementById('gallery_urls').value = '';
+        }
+    } else {
+        document.getElementById('gallery_urls').value = '';
+    }
+    // Clear gallery file input as we can't pre-fill file inputs
+    document.getElementById('gallery_files').value = '';
     
     // Toggle subcategory field visibility
     toggleSubcategoryField();
@@ -498,6 +515,10 @@ window.editItem = function(id) {
 window.cancelEdit = function() {
     editingItemId = null;
     addForm.reset();
+
+    // Also clear gallery fields that reset() might miss
+    document.getElementById('gallery_urls').value = '';
+    document.getElementById('gallery_files').value = '';
 
     // Reset headers and buttons representation
     formTitleHeading.textContent = 'Add New Product';
@@ -539,14 +560,37 @@ if (addForm) {
         formData.append('image', document.getElementById('image').value);
         formData.append('tag', document.getElementById('tag').value);
         formData.append('subcategory', document.getElementById('subcategory').value);
+        formData.append('description', document.getElementById('description').value);
+        formData.append('dimensions', document.getElementById('dimensions').value);
+        formData.append('warranty', document.getElementById('warranty').value);
 
+        // Append main image file if selected
         const fileInput = document.getElementById('image_file');
         if (fileInput && fileInput.files && fileInput.files[0]) {
             formData.append('image_file', fileInput.files[0]);
         }
 
+        // Append gallery image files (multiple select)
+        const galleryFilesInput = document.getElementById('gallery_files');
+        if (galleryFilesInput && galleryFilesInput.files && galleryFilesInput.files.length > 0) {
+            for (let i = 0; i < galleryFilesInput.files.length; i++) {
+                formData.append('gallery_files[]', galleryFilesInput.files[i]);
+            }
+        }
+
+        // Append gallery URLs textarea (one per line)
+        const galleryUrlsVal = document.getElementById('gallery_urls').value.trim();
+        if (galleryUrlsVal) {
+            formData.append('gallery_urls', galleryUrlsVal);
+        }
+
+        // When editing, pass existing additional_images so backend preserves if no new files uploaded
         if (editingItemId !== null) {
             formData.append('id', editingItemId);
+            const existingItem = itemsList.find(itm => parseInt(itm.id) === parseInt(editingItemId));
+            if (existingItem && existingItem.additional_images && !galleryUrlsVal && (!galleryFilesInput || galleryFilesInput.files.length === 0)) {
+                formData.append('additional_images', existingItem.additional_images);
+            }
         }
 
         const targetApi = editingItemId !== null ? 'api/update_item.php' : 'api/add_item.php';
@@ -561,13 +605,33 @@ if (addForm) {
             submitBtn.innerHTML = originalBtnContent;
 
             if (res.success) {
+                const plainItem = {
+                    id: editingItemId !== null ? editingItemId : res.id,
+                    category: document.getElementById('category').value,
+                    name: document.getElementById('name').value,
+                    price: document.getElementById('price').value,
+                    old_price: document.getElementById('old_price').value,
+                    rating: parseInt(document.getElementById('rating').value),
+                    badge: document.getElementById('badge').value,
+                    icon: document.getElementById('icon').value,
+                    image_bg: document.getElementById('image_bg').value,
+                    image: res.image || document.getElementById('image').value,
+                    tag: document.getElementById('tag').value,
+                    subcategory: document.getElementById('subcategory').value,
+                    description: document.getElementById('description').value,
+                    dimensions: document.getElementById('dimensions').value,
+                    warranty: document.getElementById('warranty').value,
+                    // Store additional_images from response (updated JSON) or keep existing
+                    additional_images: res.additional_images !== undefined ? res.additional_images : null
+                };
+
                 if (editingItemId !== null) {
                     showToast('Product updated successfully!');
                     
                     // Update matching object details in memory array
                     const idx = itemsList.findIndex(itm => parseInt(itm.id) === parseInt(editingItemId));
                     if (idx !== -1) {
-                        itemsList[idx] = { ...itemsList[idx], ...formData };
+                        itemsList[idx] = plainItem;
                     }
                     
                     // Reset back to Add mode
@@ -576,8 +640,7 @@ if (addForm) {
                     showToast('Product added successfully!');
                     
                     // Add newly inserted product to memory array
-                    formData.id = res.id;
-                    itemsList.unshift(formData); // Add to beginning
+                    itemsList.unshift(plainItem); // Add to beginning
                     
                     // Clear form text inputs
                     document.getElementById('name').value = '';
@@ -590,6 +653,9 @@ if (addForm) {
                     }
                     document.getElementById('tag').value = '';
                     document.getElementById('subcategory').value = '';
+                    document.getElementById('description').value = '';
+                    document.getElementById('dimensions').value = '';
+                    document.getElementById('warranty').value = '';
                     toggleSubcategoryField();
                 }
                 
@@ -644,4 +710,50 @@ document.addEventListener('DOMContentLoaded', () => {
     loadItemsFromServer();
     updateLivePreview();
     toggleSubcategoryField();
+
+    // Mobile Sidebar Responsive Toggle Logic
+    const sidebarMenu = document.getElementById('sidebar-menu');
+    const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+
+    function openMobileSidebar() {
+        if (sidebarMenu && sidebarOverlay) {
+            sidebarMenu.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+        }
+    }
+
+    function closeMobileSidebar() {
+        if (sidebarMenu && sidebarOverlay) {
+            sidebarMenu.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
+    }
+
+    if (toggleSidebarBtn) toggleSidebarBtn.addEventListener('click', openMobileSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeMobileSidebar);
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeMobileSidebar);
+
+    // Close sidebar on mobile when a category item is clicked
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth < 1024) {
+                closeMobileSidebar();
+            }
+        });
+    });
+
+    // Check if redirect query 'cat' exists in URL and filter automatically
+    const urlParams = new URLSearchParams(window.location.search);
+    const catQuery = urlParams.get('cat');
+    if (catQuery) {
+        const targetItem = document.querySelector(`.category-item[data-category="${catQuery}"]`);
+        if (targetItem) {
+            // Trigger click simulation
+            targetItem.click();
+            // Clean up the URL query parameter in the browser bar
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
 });

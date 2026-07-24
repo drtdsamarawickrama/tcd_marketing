@@ -1,6 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "./useAuth";
 
 // Props definition matching index.tsx state
 interface HeaderProps {
@@ -9,6 +12,14 @@ interface HeaderProps {
 }
 
 export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
+  const router = useRouter();
+  const { user, isLoggedIn, logout } = useAuth();
+
+  // Handle logout - clear auth then redirect to home
+  function handleLogout() {
+    logout();
+    router.push("/");
+  }
   return (
     <>
       {/* 1. TOP LITTLE NOTIFICATION BAR - Styled Light Gray with Centered Links */}
@@ -81,15 +92,31 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
 
           {/* Navigation Profile, Wishlist, Cart links - Custom layout matching TCD / Damro */}
           <div className="hidden md:flex items-center gap-6">
-            {/* LOGIN Button */}
-            <a href="#" className="flex items-center gap-2 text-slate-800 hover:text-red-600 transition group">
-              <div className="border border-zinc-200 p-1.5 rounded-full group-hover:border-red-500 transition">
-                <svg className="w-5 h-5 text-slate-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+            {/* LOGIN / USER Button - dynamic based on auth state */}
+            {isLoggedIn ? (
+              // Logged in: show username + logout button
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-slate-700">
+                  👤 {user?.username}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-xs font-black tracking-wide uppercase text-red-600 hover:text-red-700 border border-red-200 hover:border-red-400 px-3 py-1.5 rounded-lg transition"
+                >
+                  Logout
+                </button>
               </div>
-              <span className="text-xs font-black tracking-wide uppercase text-slate-900 group-hover:text-red-600">LOGIN</span>
-            </a>
+            ) : (
+              // Logged out: show Login link
+              <Link href="/login" className="flex items-center gap-2 text-slate-800 hover:text-red-600 transition group">
+                <div className="border border-zinc-200 p-1.5 rounded-full group-hover:border-red-500 transition">
+                  <svg className="w-5 h-5 text-slate-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <span className="text-xs font-black tracking-wide uppercase text-slate-900 group-hover:text-red-600">LOGIN</span>
+              </Link>
+            )}
 
             {/* WISHLIST Button */}
             <a href="#" className="flex items-center gap-2 text-slate-800 hover:text-red-600 transition group">
@@ -102,21 +129,7 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
             </a>
 
             {/* CART Button */}
-            <a href="#" className="flex items-center gap-3 text-slate-800 hover:text-red-600 transition group">
-              <div className="relative border border-zinc-200 p-1.5 rounded-full group-hover:border-red-500 transition">
-                <span className="absolute -top-1 -right-1 bg-black text-white text-[9px] font-black rounded-xs px-1 py-0.5 min-w-[15px] h-3.5 flex items-center justify-center">
-                  0
-                </span>
-                <svg className="w-5 h-5 text-teal-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              
-              <div className="flex flex-col text-left">
-                <span className="text-[9px] font-bold text-slate-400 uppercase leading-none">CART</span>
-                <span className="text-xs font-black text-slate-900 mt-1 leading-none">Rs. 0.00</span>
-              </div>
-            </a>
+            <CartButtonLink user={user} />
           </div>
 
         </div>
@@ -431,5 +444,31 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
         </nav>
       </header>
     </>
+  );
+}
+
+// Sub-component to prevent full header re-renders on cart count state changes
+function CartButtonLink({ user }: { user: any }) {
+  const { useCart } = require("./useCart");
+  const { cartCount, cartTotal } = useCart(user?.id ?? null);
+  
+  return (
+    <Link href="/cart" className="flex items-center gap-3 text-slate-800 hover:text-red-600 transition group">
+      <div className="relative border border-zinc-200 p-1.5 rounded-full group-hover:border-red-500 transition">
+        <span className="absolute -top-1 -right-1 bg-black text-white text-[9px] font-black rounded-xs px-1 py-0.5 min-w-[15px] h-3.5 flex items-center justify-center animate-pulse">
+          {cartCount}
+        </span>
+        <svg className="w-5 h-5 text-teal-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      
+      <div className="flex flex-col text-left">
+        <span className="text-[9px] font-bold text-slate-400 uppercase leading-none">CART</span>
+        <span className="text-xs font-black text-slate-900 mt-1 leading-none">
+          Rs. {cartTotal.toLocaleString("en-LK")}
+        </span>
+      </div>
+    </Link>
   );
 }

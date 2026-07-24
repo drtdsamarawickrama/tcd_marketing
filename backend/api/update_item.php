@@ -36,6 +36,10 @@ $icon = isset($data['icon']) ? trim($data['icon']) : '🏷️';
 $image = isset($data['image']) && trim($data['image']) !== '' ? trim($data['image']) : null;
 $tag = isset($data['tag']) && trim($data['tag']) !== '' ? trim($data['tag']) : null;
 $subcategory = isset($data['subcategory']) && trim($data['subcategory']) !== '' ? trim($data['subcategory']) : null;
+$description = isset($data['description']) && trim($data['description']) !== '' ? trim($data['description']) : null;
+$dimensions = isset($data['dimensions']) && trim($data['dimensions']) !== '' ? trim($data['dimensions']) : null;
+$warranty = isset($data['warranty']) && trim($data['warranty']) !== '' ? trim($data['warranty']) : null;
+$item_code = isset($data['item_code']) && trim($data['item_code']) !== '' ? trim($data['item_code']) : null; // Optional product SKU code
 
 // Check for file uploads
 if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
@@ -64,6 +68,58 @@ if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ER
     }
 }
 
+$additional_images_arr = [];
+
+// 1. Parse text area gallery URLs
+if (isset($data['gallery_urls']) && trim($data['gallery_urls']) !== '') {
+    $urls = explode("\n", $data['gallery_urls']);
+    foreach ($urls as $u) {
+        $u_trimmed = trim($u);
+        if ($u_trimmed !== '') {
+            $additional_images_arr[] = $u_trimmed;
+        }
+    }
+}
+
+// 2. Parse multiple uploaded files
+if (isset($_FILES['gallery_files'])) {
+    $files = $_FILES['gallery_files'];
+    if (is_array($files['name'])) {
+        $file_count = count($files['name']);
+        
+        $uploadsDir = __DIR__ . '/../uploads/';
+        if (!file_exists($uploadsDir)) {
+            mkdir($uploadsDir, 0777, true);
+        }
+        
+        for ($i = 0; $i < $file_count; $i++) {
+            if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $files['tmp_name'][$i];
+                $fileName = $files['name'][$i];
+                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $newFileName = md5(time() . $fileName . $i) . '.' . $fileExtension;
+                $destPath = $uploadsDir . $newFileName;
+                
+                if (move_uploaded_file($fileTmpPath, $destPath)) {
+                    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+                    $host = $_SERVER['HTTP_HOST'];
+                    $scriptName = $_SERVER['SCRIPT_NAME'];
+                    $backendPath = str_replace('/api/update_item.php', '/', $scriptName);
+                    
+                    $additional_images_arr[] = $protocol . '://' . $host . $backendPath . 'uploads/' . $newFileName;
+                }
+            }
+        }
+    }
+}
+
+// Retrieve existing gallery images if no new files/URLs are specified to avoid wiping them out
+if (empty($additional_images_arr)) {
+    $additional_images = isset($data['additional_images']) && trim($data['additional_images']) !== '' ? trim($data['additional_images']) : null;
+} else {
+    $additional_images = json_encode($additional_images_arr);
+}
+
 // Simple validation
 if ($id <= 0 || empty($category) || empty($name) || empty($price)) {
     http_response_code(400);
@@ -87,7 +143,12 @@ try {
                 `image` = :image, 
                 `tag` = :tag, 
                 `subcategory` = :subcategory, 
-                `icon` = :icon 
+                `icon` = :icon,
+                `description` = :description,
+                `dimensions` = :dimensions,
+                `warranty` = :warranty,
+                `additional_images` = :additional_images,
+                `item_code` = :item_code
             WHERE `id` = :id";
             
     $stmt = $pdo->prepare($sql);
@@ -103,13 +164,20 @@ try {
         'tag' => $tag,
         'subcategory' => $subcategory,
         'icon' => $icon,
+        'description' => $description,
+        'dimensions' => $dimensions,
+        'warranty' => $warranty,
+        'additional_images' => $additional_images,
+        'item_code' => $item_code,
         'id' => $id
     ]);
     
     // Return success response
     echo json_encode([
         "success" => true,
-        "message" => "Item updated successfully."
+        "message" => "Item updated successfully.",
+        "image" => $image,
+        "additional_images" => $additional_images
     ]);
 } catch (PDOException $e) {
     // Return error response if update fails

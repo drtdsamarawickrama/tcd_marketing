@@ -12,10 +12,10 @@
         <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Live Preview (Next.js Card Style)</div>
         <div class="bg-slate-50 border border-dashed border-slate-200 rounded-lg p-6 flex justify-center">
             <!-- Next.js Mockup Product Card -->
-            <div class="bg-white border border-zinc-200 rounded-lg overflow-hidden group hover:shadow-lg transition-all duration-200 flex flex-col justify-between w-full max-w-[280px] shadow-sm relative" id="preview-card">
+            <div class="bg-white border border-zinc-200 rounded-lg overflow-hidden group hover:shadow-lg transition-all duration-200 flex flex-col justify-between w-full max-w-70 shadow-sm relative" id="preview-card">
                 
                 <!-- Product Image Area -->
-                <div class="h-44 bg-gradient-to-br from-amber-200 to-amber-300 relative flex items-center justify-center overflow-hidden" id="preview-image-bg">
+                <div class="h-44 bg-linear-to-br from-amber-200 to-amber-300 relative flex items-center justify-center overflow-hidden" id="preview-image-bg">
                     <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase font-black px-2 py-0.5 rounded-sm tracking-wider" id="preview-badge">SALE</span>
                     <img id="preview-image" src="" alt="Preview Product" class="w-full h-full object-cover hidden" />
                     <span class="text-5xl group-hover:scale-110 transition duration-200" id="preview-emoji">🛏️</span>
@@ -24,7 +24,7 @@
                 <!-- Product Info details -->
                 <div class="p-4 flex-1 flex flex-col justify-between">
                     <div>
-                        <h3 class="text-sm font-bold text-slate-800 line-clamp-2 min-h-[40px] leading-tight" id="preview-title">
+                        <h3 class="text-sm font-bold text-slate-800 line-clamp-2 min-h-10 leading-tight" id="preview-title">
                             Solid Wood King Bedroom Set Bed
                         </h3>
                         <div class="flex gap-0.5 text-amber-500 mt-2 text-xs" id="preview-stars">
@@ -75,15 +75,42 @@
             </div>
 
             <div class="relative flex py-1 items-center">
-                <div class="flex-grow border-t border-slate-300"></div>
-                <span class="flex-shrink mx-4 text-[10px] text-slate-400 font-bold uppercase">Or</span>
-                <div class="flex-grow border-t border-slate-300"></div>
+                <div class="grow border-t border-slate-300"></div>
+                <span class="shrink mx-4 text-[10px] text-slate-400 font-bold uppercase">Or</span>
+                <div class="grow border-t border-slate-300"></div>
             </div>
 
             <div class="flex flex-col gap-1.5">
                 <label for="image" class="text-[11px] font-bold text-slate-500">Option B: Product Image URL</label>
                 <input type="url" id="image" name="image" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition" placeholder="e.g. https://example.com/product-sofa.jpg">
             </div>
+        </div>
+
+        <!-- Gallery Images section (Multiple Uploads & URLs) -->
+        <div class="flex flex-col gap-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <span class="text-xs font-bold text-slate-700">Gallery Images (Optional - Additional Photos)</span>
+            
+            <div class="flex flex-col gap-1.5">
+                <label for="gallery_files" class="text-[11px] font-bold text-slate-500">Option A: Upload Multiple Gallery Photos</label>
+                <input type="file" id="gallery_files" name="gallery_files[]" accept="image/*" multiple class="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition">
+            </div>
+
+            <div class="relative flex py-1 items-center">
+                <div class="grow border-t border-slate-300"></div>
+                <span class="shrink mx-4 text-[10px] text-slate-400 font-bold uppercase">Or</span>
+                <div class="grow border-t border-slate-300"></div>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+                <label for="gallery_urls" class="text-[11px] font-bold text-slate-500">Option B: Gallery Image URLs (One URL per line)</label>
+                <textarea id="gallery_urls" name="gallery_urls" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition" placeholder="e.g. https://example.com/image2.jpg&#10;https://example.com/image3.jpg"></textarea>
+            </div>
+        </div>
+
+        <!-- Item Code / SKU field -->
+        <div class="flex flex-col gap-1.5">
+            <label for="item_code" class="text-xs font-bold text-slate-600">Item Code / SKU (Optional)</label>
+            <input type="text" id="item_code" name="item_code" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition" placeholder="e.g. TCD-0001">
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -125,11 +152,26 @@
         </div>
 
         <!-- Subcategory selection (Visible only when category is living-room or bedroom) -->
-        <div class="flex flex-col gap-1.5 hidden" id="subcategory-field">
+        <div class="flex flex-col gap-1.5" id="subcategory-field">
             <label for="subcategory" id="subcategory-label" class="text-xs font-bold text-slate-600">Product Subcategory (Optional)</label>
             <select id="subcategory" name="subcategory" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition">
                 <option value="">None (Standard Product)</option>
             </select>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label for="description" class="text-xs font-bold text-slate-600">Product Description (Optional, newlines create bullet points)</label>
+            <textarea id="description" name="description" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition" placeholder="e.g. Crafted from solid teak wood.&#10;Polished mahogany varnish finish."></textarea>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label for="dimensions" class="text-xs font-bold text-slate-600">Product Dimensions (Optional, newlines split entries)</label>
+            <textarea id="dimensions" name="dimensions" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition" placeholder="e.g. Length - 186cm | Width - 81cm | Height - 86cm"></textarea>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label for="warranty" class="text-xs font-bold text-slate-600">Warranty Details (Optional, newlines split items)</label>
+            <textarea id="warranty" name="warranty" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition" placeholder="e.g. 10 Years wood rot warranty.&#10;3 Years fabrics frame warranty."></textarea>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
