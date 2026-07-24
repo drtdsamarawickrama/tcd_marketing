@@ -5,19 +5,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CategoryHero from "@/components/CategoryHero";
-
-// Budget products mock data
-const BUDGET_PRODUCTS = [
-  { id: 1, name: "Solid Wood Queen Bed Frame (Budget Deal)", price: "Rs. 45,000", oldPrice: "Rs. 52,000", rating: 4, imageBg: "from-amber-100 to-yellow-200", badge: "Super Deal" },
-  { id: 2, name: "Eco Foam Comfort Mattress 6x3", price: "Rs. 12,500", rating: 4, imageBg: "from-sky-50 to-neutral-200" },
-  { id: 3, name: "Compact 2-Door Wardrobe (Economic Melamine)", price: "Rs. 28,000", oldPrice: "Rs. 32,500", rating: 4, imageBg: "from-orange-50 to-amber-100", badge: "Price Drop" },
-  { id: 4, name: "Basic Office Desk with Drawer", price: "Rs. 14,500", rating: 4, imageBg: "from-slate-100 to-zinc-200" },
-  { id: 5, name: "Simple 3-Tier Plastic Storage Drawer", price: "Rs. 7,200", rating: 5, imageBg: "from-indigo-50 to-blue-100" },
-  { id: 6, name: "Innovex Table Fan 16\" (Eco Save)", price: "Rs. 8,500", rating: 4, imageBg: "from-slate-100 to-neutral-200" },
-];
+import { useProducts } from "@/components/useProducts";
 
 export default function BudgetItemsPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { products, loading, error } = useProducts("budget-items");
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 font-sans">
@@ -40,23 +32,39 @@ export default function BudgetItemsPage() {
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-bold text-slate-800">Explore Budget Items</h2>
             <span className="text-xs font-semibold text-zinc-500 bg-zinc-200 px-3 py-1 rounded-full">
-              {BUDGET_PRODUCTS.length} Items Found
+              {loading ? "..." : `${products.length} Items Found`}
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {BUDGET_PRODUCTS.map((prod) => (
-              <ProductCard
-                key={prod.id}
-                name={prod.name}
-                price={prod.price}
-                oldPrice={prod.oldPrice}
-                rating={prod.rating}
-                imageBg={prod.imageBg}
-                badge={prod.badge}
-                icon="🏷️"
-              />
-            ))}
+            {loading ? (
+              <div className="col-span-full py-12 flex justify-center items-center text-slate-500 font-medium">
+                <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mr-3"></span>
+                Loading products...
+              </div>
+            ) : error ? (
+              <div className="col-span-full py-12 text-center text-red-500 font-medium">
+                Error loading products: {error}
+              </div>
+            ) : products.length === 0 ? (
+              <div className="col-span-full py-12 text-center text-zinc-400 font-medium">
+                No products found in this category.
+              </div>
+            ) : (
+              products.map((prod) => (
+                <ProductCard
+                  key={prod.id}
+                  name={prod.name}
+                  price={prod.price}
+                  oldPrice={prod.old_price || undefined}
+                  rating={prod.rating}
+                  imageBg={prod.image_bg}
+                  badge={prod.badge || undefined}
+                  image={prod.image || undefined}
+                  icon={prod.icon}
+                />
+              ))
+            )}
           </div>
         </section>
 

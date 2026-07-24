@@ -24,6 +24,7 @@ if (empty($data)) {
 }
 
 // Extract and validate fields
+$id = isset($data['id']) ? intval($data['id']) : 0;
 $category = isset($data['category']) ? trim($data['category']) : '';
 $name = isset($data['name']) ? trim($data['name']) : '';
 $price = isset($data['price']) ? trim($data['price']) : '';
@@ -57,26 +58,37 @@ if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ER
         $host = $_SERVER['HTTP_HOST'];
         $scriptName = $_SERVER['SCRIPT_NAME'];
         
-        $backendPath = str_replace('/api/add_item.php', '/', $scriptName);
+        $backendPath = str_replace('/api/update_item.php', '/', $scriptName);
         
         $image = $protocol . '://' . $host . $backendPath . 'uploads/' . $newFileName;
     }
 }
 
 // Simple validation
-if (empty($category) || empty($name) || empty($price)) {
+if ($id <= 0 || empty($category) || empty($name) || empty($price)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Required fields missing (category, name, price are required)."
+        "message" => "Required fields missing (id, category, name, price are required)."
     ]);
     exit();
 }
 
 try {
-    // SQL query to insert new item
-    $sql = "INSERT INTO `items` (`category`, `name`, `price`, `old_price`, `rating`, `image_bg`, `badge`, `image`, `tag`, `subcategory`, `icon`) 
-            VALUES (:category, :name, :price, :old_price, :rating, :image_bg, :badge, :image, :tag, :subcategory, :icon)";
+    // SQL query to update item
+    $sql = "UPDATE `items` SET 
+                `category` = :category, 
+                `name` = :name, 
+                `price` = :price, 
+                `old_price` = :old_price, 
+                `rating` = :rating, 
+                `image_bg` = :image_bg, 
+                `badge` = :badge, 
+                `image` = :image, 
+                `tag` = :tag, 
+                `subcategory` = :subcategory, 
+                `icon` = :icon 
+            WHERE `id` = :id";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -90,21 +102,21 @@ try {
         'image' => $image,
         'tag' => $tag,
         'subcategory' => $subcategory,
-        'icon' => $icon
+        'icon' => $icon,
+        'id' => $id
     ]);
     
-    // Return success response with newly created item ID
+    // Return success response
     echo json_encode([
         "success" => true,
-        "message" => "Item added successfully.",
-        "id" => $pdo->lastInsertId()
+        "message" => "Item updated successfully."
     ]);
 } catch (PDOException $e) {
-    // Return error response if insertion fails
+    // Return error response if update fails
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Failed to add item: " . $e->getMessage()
+        "message" => "Failed to update item: " . $e->getMessage()
     ]);
 }
 ?>

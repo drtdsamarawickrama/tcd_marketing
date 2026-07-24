@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS `items` (
     `rating` INT DEFAULT 5, -- rating from 1 to 5
     `image_bg` VARCHAR(255) NOT NULL, -- CSS background gradient classes
     `badge` VARCHAR(50) DEFAULT NULL, -- e.g. 'Sale', 'New'
+    `image` VARCHAR(255) DEFAULT NULL, -- Optional image URL for product
+    `tag` VARCHAR(20) DEFAULT NULL, -- Featured Tag: 'best', 'new', 'offer', or NULL
+    `subcategory` VARCHAR(50) DEFAULT NULL, -- Optional subcategory for filtering (e.g. 'sofa-sets')
     `icon` VARCHAR(50) NOT NULL, -- Emoji representing category
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -1,6 +1,7 @@
 // Store all items fetched dynamically in JavaScript memory
 let itemsList = [];
 let selectedCategory = 'all';
+let editingItemId = null; // Stores ID of product being edited, null if in Add mode
 
 // Predefined category icons lookup helper
 const categoryMeta = {
@@ -17,14 +18,19 @@ const categoryMeta = {
 const categorySelect = document.getElementById('category');
 const iconInput = document.getElementById('icon');
 const bgInput = document.getElementById('image_bg');
+const imageInput = document.getElementById('image');
 const previewCard = document.getElementById('preview-card');
 const previewImageBg = document.getElementById('preview-image-bg');
+const previewImage = document.getElementById('preview-image');
 const previewEmoji = document.getElementById('preview-emoji');
 const previewBadge = document.getElementById('preview-badge');
 const previewTitle = document.getElementById('preview-title');
 const previewPrice = document.getElementById('preview-price');
 const previewOldPrice = document.getElementById('preview-old-price');
 const addForm = document.getElementById('add-product-form');
+const formTitleHeading = document.getElementById('form-title-heading');
+const formSubmitText = document.getElementById('form-submit-text');
+const cancelEditBtn = document.getElementById('cancel-edit-btn');
 const productsGrid = document.getElementById('products-grid');
 const currentCategoryTitle = document.getElementById('current-category-title');
 const itemsFoundLabel = document.getElementById('items-found-label');
@@ -93,8 +99,22 @@ function updateLivePreview() {
         previewBadge.style.display = 'none';
     }
     
-    // Update Emoji icon
-    previewEmoji.textContent = iconInput.value ? iconInput.value : '🛏️';
+    // Update Image or Emoji icon
+    const fileInput = document.getElementById('image_file');
+    const imageVal = imageInput.value.trim();
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        previewImage.src = URL.createObjectURL(fileInput.files[0]);
+        previewImage.classList.remove('hidden');
+        previewEmoji.classList.add('hidden');
+    } else if (imageVal) {
+        previewImage.src = imageVal;
+        previewImage.classList.remove('hidden');
+        previewEmoji.classList.add('hidden');
+    } else {
+        previewImage.classList.add('hidden');
+        previewEmoji.classList.remove('hidden');
+        previewEmoji.textContent = iconInput.value ? iconInput.value : '🛏️';
+    }
     
     // Update gradient background
     const bgClass = bgInput.value;
@@ -111,10 +131,176 @@ document.getElementById('price').addEventListener('input', updateLivePreview);
 document.getElementById('old_price').addEventListener('input', updateLivePreview);
 document.getElementById('badge').addEventListener('input', updateLivePreview);
 iconInput.addEventListener('input', updateLivePreview);
+imageInput.addEventListener('input', updateLivePreview);
+if (document.getElementById('image_file')) {
+    document.getElementById('image_file').addEventListener('change', updateLivePreview);
+}
+
+const categorySubcategories = {
+    'living-room': [
+        { group: 'Seating', items: [
+            { value: 'sofa-sets', label: 'Sofa Sets' },
+            { value: 'corner-sofa', label: 'Corner + Chaise Sofa' },
+            { value: 'recliner-sofa', label: 'Recliner Sofa' },
+            { value: 'single-seaters', label: 'Single Seaters' },
+            { value: 'ottoman', label: 'Ottoman' },
+            { value: 'sofa-beds', label: 'Sofa Beds' },
+            { value: 'wooden-sofa', label: 'Wooden Sofa' }
+        ]},
+        { group: 'Coffee Tables, TV Stands & Rugs', items: [
+            { value: 'coffee-tables', label: 'Coffee Tables & Side Tables' },
+            { value: 'tv-stands', label: 'TV Stands & Wall Units' },
+            { value: 'cabinets', label: 'Display cabinets & Sideboards' },
+            { value: 'shelves', label: 'Wall Shelves & Display Stands' },
+            { value: 'rugs', label: 'Rugs' }
+        ]}
+    ],
+    'bedroom': [
+        { group: 'Bedroom Furniture', items: [
+            { value: 'bedroom-suites', label: 'Bedroom Suites' },
+            { value: 'beds', label: 'Beds' },
+            { value: 'upholstered-beds', label: 'Upholstered Beds' },
+            { value: 'bedside-cupboards', label: 'Bedside Cupboards & Bench' },
+            { value: 'wardrobes', label: 'Wardrobes' },
+            { value: 'modular-wardrobe', label: 'Modular Wardrobe' },
+            { value: 'dressing-tables', label: 'Dressing Tables' },
+            { value: 'clothes-racks', label: 'Clothes Racks' },
+            { value: 'shoe-racks', label: 'Shoe Racks & Storage' },
+            { value: 'iron-tables', label: 'Iron Tables' }
+        ]},
+        { group: 'Mattress, Pillows & Bedsheet', items: [
+            { value: 'spring-mattresses', label: 'Spring Mattresses' },
+            { value: 'foam-mattresses', label: 'Foam Mattresses' },
+            { value: 'pillows-protectors', label: 'Pillows & Mattress Protectors' }
+        ]}
+    ],
+    'dining': [
+        { group: 'Wooden Finish', items: [
+            { value: 'wooden-sets', label: 'Wooden Dining Sets' },
+            { value: 'wooden-chairs', label: 'Wooden Dining Chairs' },
+            { value: 'pantry-cupboards', label: 'Pantry Cupboards' },
+            { value: 'dining-cabinets', label: 'Cabinets & Sideboards' }
+        ]},
+        { group: 'Metal Finish', items: [
+            { value: 'metal-sets', label: 'Metal Dining Sets' },
+            { value: 'metal-chairs', label: 'Metal Dining Chairs' }
+        ]}
+    ],
+    'office-furniture': [
+        { group: 'Tables, Cupboards & Racks', items: [
+            { value: 'office-tables', label: 'Office Tables' },
+            { value: 'executive-tables', label: 'Executive Tables' },
+            { value: 'conference-tables', label: 'Conference & Discussion Tables' },
+            { value: 'cupboards-racks', label: 'Cupboards & Racks' },
+            { value: 'steel-furniture', label: 'Steel Furniture' },
+            { value: 'study-desks', label: 'Study Desks & Computer Tables' },
+            { value: 'workstations', label: 'Workstations' },
+            { value: 'reception-counters', label: 'Reception Counters' }
+        ]},
+        { group: 'Seating', items: [
+            { value: 'chairs-series', label: 'Office Chairs By Series' },
+            { value: 'chairs-models', label: 'All Office Chair Models' },
+            { value: 'lobby-seaters', label: 'Lobby Seaters' },
+            { value: 'waiting-chairs', label: 'Waiting Chairs' }
+        ]},
+        { group: 'Secure Storages & Safes', items: [
+            { value: 'safes-doors', label: 'Safes & Fire Resistant Doors' },
+            { value: 'lockers-safes', label: 'Safety Lockers & Strong Box' }
+        ]}
+    ],
+    'plastic-products': [
+        { group: 'Plastic Products', items: [
+            { value: 'plastic-chairs', label: 'Plastic Chairs' },
+            { value: 'plastic-tables', label: 'Plastic Tables' },
+            { value: 'plastic-cupboards', label: 'Plastic Cupboards' },
+            { value: 'household', label: 'Household' },
+            { value: 'pvc-doors', label: 'PVC Doors & Frames' }
+        ]}
+    ],
+    'electrics': [
+        { group: 'Kitchen Appliances', items: [
+            { value: 'kitchen-ovens', label: 'Ovens & Microwaves' },
+            { value: 'kitchen-blenders', label: 'Blenders & Grinders' },
+            { value: 'kitchen-cookers', label: 'Rice Cookers & Kettles' },
+            { value: 'kitchen-stoves', label: 'Gas Stoves & Hobs' }
+        ]},
+        { group: 'Home Appliances', items: [
+            { value: 'home-fridges', label: 'Refrigerators' },
+            { value: 'home-washers', label: 'Washing Machines' },
+            { value: 'home-coolers', label: 'Air Conditioners & Fans' }
+        ]},
+        { group: 'Audio & Video', items: [
+            { value: 'av-tvs', label: 'Televisions' },
+            { value: 'av-audio', label: 'Home Theatre & Speakers' }
+        ]}
+    ]
+};
+
+// Toggle subcategory field container based on chosen category selection
+function toggleSubcategoryField() {
+    const subField = document.getElementById('subcategory-field');
+    const subSelect = document.getElementById('subcategory');
+    const subLabel = document.getElementById('subcategory-label');
+    if (!subField || !subSelect) return;
+
+    const catValue = categorySelect ? categorySelect.value : '';
+    const subcategoriesList = categorySubcategories[catValue];
+
+    if (subcategoriesList) {
+        // Backup currently selected value to re-assign if it is valid for new options (for edit mode)
+        const currentSelectedVal = subSelect.value;
+
+        // Clear existing options except placeholder
+        subSelect.innerHTML = '<option value="">None (Standard Product)</option>';
+        
+        // Rebuild options dynamically
+        subcategoriesList.forEach(grp => {
+            const optGroup = document.createElement('optgroup');
+            optGroup.label = grp.group;
+            grp.items.forEach(itm => {
+                const opt = document.createElement('option');
+                opt.value = itm.value;
+                opt.textContent = itm.label;
+                optGroup.appendChild(opt);
+            });
+            subSelect.appendChild(optGroup);
+        });
+
+        // Restore backup selection value if valid
+        if (currentSelectedVal) {
+            subSelect.value = currentSelectedVal;
+        }
+
+        // Set Label text dynamically
+        if (subLabel) {
+            subLabel.textContent = catValue === 'living-room' 
+                ? 'Living Room Subcategory' 
+                : catValue === 'bedroom' 
+                    ? 'Bedroom Subcategory' 
+                    : catValue === 'dining'
+                        ? 'Dining Subcategory'
+                        : catValue === 'office-furniture'
+                            ? 'Office Subcategory'
+                            : catValue === 'plastic-products'
+                                ? 'Plastic Subcategory'
+                                : 'Electrics Subcategory';
+        }
+
+        subField.classList.remove('hidden');
+    } else {
+        subField.classList.add('hidden');
+        subSelect.value = ''; // Reset select
+    }
+}
 
 // Auto update emoji & bg gradients depending on chosen category
 if (categorySelect) {
     categorySelect.addEventListener('change', function() {
+        toggleSubcategoryField();
+
+        // Skip auto-fill if currently in editing mode
+        if (editingItemId !== null) return;
+
         const selectedOpt = this.options[this.selectedIndex];
         const icon = selectedOpt.getAttribute('data-icon');
         const bg = selectedOpt.getAttribute('data-gradient');
@@ -189,13 +375,21 @@ function renderItems() {
             ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] uppercase font-black px-2 py-0.5 rounded-sm tracking-wider">${item.badge.toUpperCase()}</span>` 
             : '';
 
+        // Parse image or icon element HTML representation
+        const imageHTML = item.image 
+            ? `<img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />`
+            : `<span class="text-5xl group-hover:scale-110 transition duration-200">${item.icon}</span>`;
+
         const cardHTML = `
             <div class="bg-white border border-zinc-200 rounded-lg overflow-hidden group hover:shadow-lg transition-all duration-200 flex flex-col justify-between shadow-sm relative" id="card-${item.id}">
                 <div class="h-44 bg-gradient-to-br ${item.image_bg} relative flex items-center justify-center overflow-hidden">
                     ${badgeHTML}
-                    <span class="text-5xl group-hover:scale-110 transition duration-200">${item.icon}</span>
-                    <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
-                        <button class="bg-red-600 text-white font-extrabold text-xs px-4 py-2 rounded-md hover:bg-red-700 shadow-md" onclick="deleteItem(${item.id})">
+                    ${imageHTML}
+                    <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xs flex flex-col gap-2.5 items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
+                        <button class="bg-blue-600 text-white font-extrabold text-xs px-4 py-2 rounded-md hover:bg-blue-700 shadow-md w-28" onclick="editItem(${item.id})">
+                            Edit Item
+                        </button>
+                        <button class="bg-red-600 text-white font-extrabold text-xs px-4 py-2 rounded-md hover:bg-red-700 shadow-md w-28" onclick="deleteItem(${item.id})">
                             Delete Item
                         </button>
                     </div>
@@ -234,7 +428,7 @@ document.querySelectorAll('.category-item').forEach(item => {
         currentCategoryTitle.textContent = nameSpan ? nameSpan.textContent : 'All Products';
         
         // If filtering by specific category, pre-select it in form dropdown
-        if(selectedCategory !== 'all' && categorySelect) {
+        if(selectedCategory !== 'all' && categorySelect && editingItemId === null) {
             categorySelect.value = selectedCategory;
             categorySelect.dispatchEvent(new Event('change'));
         }
@@ -257,32 +451,109 @@ function updateSidebarCounters() {
     });
 }
 
-// Post request using fetch to add a new item
+// Switch form state to edit mode
+window.editItem = function(id) {
+    const item = itemsList.find(itm => parseInt(itm.id) === parseInt(id));
+    if (!item) return;
+
+    editingItemId = id;
+
+    // Fill form inputs
+    document.getElementById('category').value = item.category;
+    document.getElementById('name').value = item.name;
+    document.getElementById('price').value = item.price;
+    document.getElementById('old_price').value = item.old_price || '';
+    document.getElementById('rating').value = item.rating;
+    document.getElementById('badge').value = item.badge || '';
+    document.getElementById('image').value = item.image || '';
+    document.getElementById('tag').value = item.tag || '';
+    document.getElementById('subcategory').value = item.subcategory || '';
+    document.getElementById('icon').value = item.icon;
+    document.getElementById('image_bg').value = item.image_bg;
+    
+    // Toggle subcategory field visibility
+    toggleSubcategoryField();
+
+    // Highlight selected gradient in option panel UI
+    document.querySelectorAll('.gradient-option').forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.getAttribute('data-classes') === item.image_bg) {
+            opt.classList.add('selected');
+        }
+    });
+
+    document.getElementById('form-category-indicator').textContent = 'Category: ' + item.category;
+
+    // Update form header title and button text labels
+    formTitleHeading.textContent = 'Edit Product';
+    formSubmitText.textContent = 'Update Product';
+    cancelEditBtn.classList.remove('hidden');
+
+    // Update live preview & scroll smooth to view editing form
+    updateLivePreview();
+    document.getElementById('add-product-form').scrollIntoView({ behavior: 'smooth' });
+};
+
+// Cancel edit and reset to original add state mode
+window.cancelEdit = function() {
+    editingItemId = null;
+    addForm.reset();
+
+    // Reset headers and buttons representation
+    formTitleHeading.textContent = 'Add New Product';
+    formSubmitText.textContent = 'Add Product to Category';
+    cancelEditBtn.classList.add('hidden');
+
+    // Trigger categories change event helper to reset gradients and icon emojis
+    if(categorySelect) {
+        categorySelect.dispatchEvent(new Event('change'));
+    }
+
+    updateLivePreview();
+};
+
+if (cancelEditBtn) {
+    cancelEditBtn.addEventListener('click', window.cancelEdit);
+}
+
+// Post request using fetch to add or update an item
 if (addForm) {
     addForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const submitBtn = this.querySelector('button[type="submit"]');
+        const submitBtn = document.getElementById('form-submit-btn');
         const originalBtnContent = submitBtn.innerHTML;
         submitBtn.disabled = true;
-        submitBtn.innerHTML = `<span class="spinner"></span> <span>Saving...</span>`;
+        submitBtn.innerHTML = `<span class="spinner"></span> <span>${editingItemId ? 'Updating...' : 'Saving...'}</span>`;
 
-        // Prepare key form variables payload
-        const formData = {
-            category: document.getElementById('category').value,
-            name: document.getElementById('name').value,
-            price: document.getElementById('price').value,
-            old_price: document.getElementById('old_price').value,
-            rating: document.getElementById('rating').value,
-            badge: document.getElementById('badge').value,
-            icon: document.getElementById('icon').value,
-            image_bg: document.getElementById('image_bg').value
-        };
+        // Prepare key form variables payload using FormData for file uploads support
+        const formData = new FormData();
+        formData.append('category', document.getElementById('category').value);
+        formData.append('name', document.getElementById('name').value);
+        formData.append('price', document.getElementById('price').value);
+        formData.append('old_price', document.getElementById('old_price').value);
+        formData.append('rating', document.getElementById('rating').value);
+        formData.append('badge', document.getElementById('badge').value);
+        formData.append('icon', document.getElementById('icon').value);
+        formData.append('image_bg', document.getElementById('image_bg').value);
+        formData.append('image', document.getElementById('image').value);
+        formData.append('tag', document.getElementById('tag').value);
+        formData.append('subcategory', document.getElementById('subcategory').value);
 
-        fetch('api/add_item.php', {
+        const fileInput = document.getElementById('image_file');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            formData.append('image_file', fileInput.files[0]);
+        }
+
+        if (editingItemId !== null) {
+            formData.append('id', editingItemId);
+        }
+
+        const targetApi = editingItemId !== null ? 'api/update_item.php' : 'api/add_item.php';
+
+        fetch(targetApi, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+            body: formData
         })
         .then(res => res.json())
         .then(res => {
@@ -290,24 +561,44 @@ if (addForm) {
             submitBtn.innerHTML = originalBtnContent;
 
             if (res.success) {
-                showToast('Product added successfully!');
-                
-                // Add newly inserted product to memory array
-                formData.id = res.id;
-                itemsList.unshift(formData); // Add to beginning
-                
-                // Clear form text inputs
-                document.getElementById('name').value = '';
-                document.getElementById('price').value = '';
-                document.getElementById('old_price').value = '';
-                document.getElementById('badge').value = '';
+                if (editingItemId !== null) {
+                    showToast('Product updated successfully!');
+                    
+                    // Update matching object details in memory array
+                    const idx = itemsList.findIndex(itm => parseInt(itm.id) === parseInt(editingItemId));
+                    if (idx !== -1) {
+                        itemsList[idx] = { ...itemsList[idx], ...formData };
+                    }
+                    
+                    // Reset back to Add mode
+                    cancelEdit();
+                } else {
+                    showToast('Product added successfully!');
+                    
+                    // Add newly inserted product to memory array
+                    formData.id = res.id;
+                    itemsList.unshift(formData); // Add to beginning
+                    
+                    // Clear form text inputs
+                    document.getElementById('name').value = '';
+                    document.getElementById('price').value = '';
+                    document.getElementById('old_price').value = '';
+                    document.getElementById('badge').value = '';
+                    document.getElementById('image').value = '';
+                    if (document.getElementById('image_file')) {
+                        document.getElementById('image_file').value = '';
+                    }
+                    document.getElementById('tag').value = '';
+                    document.getElementById('subcategory').value = '';
+                    toggleSubcategoryField();
+                }
                 
                 // Refresh view
                 updateSidebarCounters();
                 renderItems();
                 updateLivePreview();
             } else {
-                showToast(res.message || 'Error occurred while adding product.', 'error');
+                showToast(res.message || 'Error occurred while saving product.', 'error');
             }
         })
         .catch(err => {
@@ -331,6 +622,11 @@ window.deleteItem = function(id) {
             // Filter deleted item out of memory list array
             itemsList = itemsList.filter(item => parseInt(item.id) !== parseInt(id));
             
+            // If the item deleted was currently being edited, cancel the edit mode
+            if (editingItemId !== null && parseInt(editingItemId) === parseInt(id)) {
+                cancelEdit();
+            }
+
             // Refresh rendering
             updateSidebarCounters();
             renderItems();
@@ -347,4 +643,5 @@ window.deleteItem = function(id) {
 document.addEventListener('DOMContentLoaded', () => {
     loadItemsFromServer();
     updateLivePreview();
+    toggleSubcategoryField();
 });

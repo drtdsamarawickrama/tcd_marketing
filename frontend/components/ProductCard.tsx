@@ -8,10 +8,11 @@ interface ProductCardProps {
   rating: number;
   imageBg: string;
   badge?: string;
-  icon: string; // Emoji representing the product category
+  icon?: string; // Emoji representing the product category (optional)
+  image?: string; // Optional image URL for the product
 }
 
-export default function ProductCard({ name, price, oldPrice, rating, imageBg, badge, icon }: ProductCardProps) {
+export default function ProductCard({ name, price, oldPrice, rating, imageBg, badge, icon, image }: ProductCardProps) {
   return (
     <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden group hover:shadow-lg transition-all duration-200 flex flex-col justify-between">
       
@@ -22,7 +23,18 @@ export default function ProductCard({ name, price, oldPrice, rating, imageBg, ba
             {badge}
           </span>
         )}
-        <span className="text-6xl group-hover:scale-115 transition duration-200">{icon}</span>
+        
+        {/* If image is provided, show the image; otherwise, fallback to the emoji icon */}
+        {image ? (
+          <img 
+            src={image} 
+            alt={name} 
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-200" 
+          />
+        ) : (
+          icon && <span className="text-6xl group-hover:scale-115 transition duration-200">{icon}</span>
+        )}
+
         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-200">
           <button className="bg-white text-slate-800 font-extrabold text-xs px-4 py-2 rounded-md hover:bg-slate-100 shadow-md">
             Quick View

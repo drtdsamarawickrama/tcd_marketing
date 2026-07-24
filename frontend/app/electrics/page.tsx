@@ -1,26 +1,88 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CategoryHero from "@/components/CategoryHero";
+import { useProducts } from "@/components/useProducts";
 
-// Electrics/Appliances products mock data
-const ELECTRICS_PRODUCTS = [
-  { id: 1, name: "Innovex 32\" Smart Android LED TV", price: "Rs. 58,500", rating: 4, imageBg: "from-slate-800 to-slate-900 text-white", badge: "Best Buy" },
-  { id: 2, name: "Innovex Double Door Refrigerator 220L", price: "Rs. 135,000", rating: 5, imageBg: "from-sky-100 to-sky-200", badge: "Free Delivery" },
-  { id: 3, name: "Innovex Fully Auto Washing Machine 7kg", price: "Rs. 95,000", oldPrice: "Rs. 108,000", rating: 5, imageBg: "from-blue-50 to-blue-200", badge: "-12% Off" },
-  { id: 4, name: "Innovex Microwave Oven 20L", price: "Rs. 24,000", rating: 4, imageBg: "from-slate-200 to-neutral-300" },
-  { id: 5, name: "Innovex 43\" Full HD Smart TV", price: "Rs. 98,000", oldPrice: "Rs. 110,000", rating: 5, imageBg: "from-slate-700 to-stone-900 text-white", badge: "Sale" },
-  { id: 6, name: "Innovex Single Door Fridge 170L", price: "Rs. 79,500", rating: 4, imageBg: "from-teal-50 to-cyan-100" },
-];
+// Lookup mapping for query parameters to user-friendly titles
+const subcategoryLabels: Record<string, string> = {
+  "kitchen-ovens": "Ovens & Microwaves",
+  "kitchen-blenders": "Blenders & Grinders",
+  "kitchen-cookers": "Rice Cookers & Kettles",
+  "kitchen-stoves": "Gas Stoves & Hobs",
+  "home-fridges": "Refrigerators",
+  "home-washers": "Washing Machines",
+  "home-coolers": "Air Conditioners & Fans",
+  "av-tvs": "Televisions",
+  "av-audio": "Home Theatre & Speakers"
+};
 
-export default function ElectricsPage() {
+function ElectricsContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { products, loading, error } = useProducts("electrics");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const subcategory = searchParams.get("sub");
+
+  // Filter products locally using database subcategory field with a keyword-based fallback
+  const getFilteredProducts = () => {
+    if (!subcategory) return products;
+    const sub = subcategory.toLowerCase();
+    
+    return products.filter((prod) => {
+      // 1. Primary check: Database subcategory column
+      if (prod.subcategory && prod.subcategory.toLowerCase() === sub) {
+        return true;
+      }
+      
+      // 2. Fallback check: Keyword matching in product name (for backward compatibility)
+      if (prod.subcategory) {
+        // If it has a different subcategory assigned, don't show it here
+        return false;
+      }
+      
+      const name = prod.name.toLowerCase();
+      if (sub === "kitchen-ovens") {
+        return name.includes("oven") || name.includes("microwave");
+      }
+      if (sub === "kitchen-blenders") {
+        return name.includes("blender") || name.includes("grinder") || name.includes("mixer") || name.includes("juicer");
+      }
+      if (sub === "kitchen-cookers") {
+        return name.includes("cooker") || name.includes("kettle");
+      }
+      if (sub === "kitchen-stoves") {
+        return name.includes("stove") || name.includes("hob");
+      }
+      if (sub === "home-fridges") {
+        return name.includes("fridge") || name.includes("refrigerator") || name.includes("freezer");
+      }
+      if (sub === "home-washers") {
+        return name.includes("wash") || name.includes("washer") || name.includes("dryer");
+      }
+      if (sub === "home-coolers") {
+        return name.includes("air") || name.includes("cooler") || name.includes("fan") || name.includes("conditioner");
+      }
+      if (sub === "av-tvs") {
+        return name.includes("tv") || name.includes("television") || name.includes("led") || name.includes("screen");
+      }
+      if (sub === "av-audio") {
+        return name.includes("speaker") || name.includes("sound") || name.includes("theatre") || name.includes("audio");
+      }
+      return false;
+    });
+  };
+
+  const filteredProducts = getFilteredProducts();
+  const activeLabel = subcategory ? subcategoryLabels[subcategory] || subcategory : "";
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 font-sans">
+      {/* Shared Header component */}
       <Header mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
       
       <main className="flex-grow">
@@ -37,32 +99,83 @@ export default function ElectricsPage() {
 
         {/* Product Catalog Grid */}
         <section className="max-w-7xl mx-auto px-4 py-12">
+          
+          {/* Active Subcategory Indicator */}
+          {subcategory && (
+            <div className="mb-6 flex items-center gap-2 animate-fade-in">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Active Filter:</span>
+              <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-1 rounded-full font-bold">
+                <span>{activeLabel}</span>
+                <button 
+                  onClick={() => router.push("/electrics")} 
+                  className="hover:text-red-900 font-extrabold focus:outline-none ml-1 text-sm leading-none"
+                  title="Clear Filter"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-bold text-slate-800">Explore Electrics Range</h2>
+            <h2 className="text-xl font-bold text-slate-800">
+              {subcategory ? `Explore ${activeLabel}` : "Explore Electrics Range"}
+            </h2>
             <span className="text-xs font-semibold text-zinc-500 bg-zinc-200 px-3 py-1 rounded-full">
-              {ELECTRICS_PRODUCTS.length} Items Found
+              {loading ? "..." : `${filteredProducts.length} Items Found`}
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {ELECTRICS_PRODUCTS.map((prod) => (
-              <ProductCard
-                key={prod.id}
-                name={prod.name}
-                price={prod.price}
-                oldPrice={prod.oldPrice}
-                rating={prod.rating}
-                imageBg={prod.imageBg}
-                badge={prod.badge}
-                icon={prod.name.includes("TV") ? "📺" : prod.name.includes("Fridge") || prod.name.includes("Refr") ? "🧊" : prod.name.includes("Microw") ? "🔌" : "🧺"}
-              />
-            ))}
+            {loading ? (
+              <div className="col-span-full py-12 flex justify-center items-center text-slate-500 font-medium">
+                <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mr-3"></span>
+                Loading products...
+              </div>
+            ) : error ? (
+              <div className="col-span-full py-12 text-center text-red-500 font-medium">
+                Error loading products: {error}
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="col-span-full py-12 text-center text-zinc-400 font-medium border border-dashed border-zinc-200 bg-white rounded-xl p-16">
+                <span className="text-4xl block mb-2">⚡</span>
+                No products found under <span className="font-semibold text-slate-700">"{activeLabel || "Electrics"}"</span>.
+              </div>
+            ) : (
+              filteredProducts.map((prod) => (
+                <ProductCard
+                  key={prod.id}
+                  name={prod.name}
+                  price={prod.price}
+                  oldPrice={prod.old_price || undefined}
+                  rating={prod.rating}
+                  imageBg={prod.image_bg}
+                  badge={prod.badge || undefined}
+                  image={prod.image || undefined}
+                  icon={prod.icon}
+                />
+              ))
+            )}
           </div>
         </section>
 
       </main>
 
+      {/* Shared Footer component */}
       <Footer />
     </div>
+  );
+}
+
+export default function ElectricsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen bg-zinc-50 text-slate-500">
+        <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mr-3"></span>
+        Loading page...
+      </div>
+    }>
+      <ElectricsContent />
+    </Suspense>
   );
 }
