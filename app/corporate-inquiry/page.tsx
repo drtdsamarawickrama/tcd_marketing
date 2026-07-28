@@ -154,8 +154,8 @@ export default function CorporateInquiryPage() {
                         value={formData.fullName}
                         onChange={handleChange}
                         required
-                        placeholder="John Doe"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        placeholder="Kamal Silva"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
 
@@ -168,7 +168,7 @@ export default function CorporateInquiryPage() {
                         onChange={handleChange}
                         required
                         placeholder="Acme Corp"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
                   </div>
@@ -182,8 +182,8 @@ export default function CorporateInquiryPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        placeholder="example@acme.com"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        placeholder="kamal@gmail.com"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
 
@@ -196,7 +196,7 @@ export default function CorporateInquiryPage() {
                         onChange={handleChange}
                         required
                         placeholder="+94 77 123 4567"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
                   </div>
@@ -207,7 +207,7 @@ export default function CorporateInquiryPage() {
                       name="inquiryType"
                       value={formData.inquiryType}
                       onChange={handleChange}
-                      className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                      className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                     >
                       <option value="office">Office Furniture Furnishing</option>
                       <option value="hotel">Hotel, Villa & Resort Bulk Order</option>
@@ -226,7 +226,7 @@ export default function CorporateInquiryPage() {
                       required
                       rows={5}
                       placeholder="Please specify estimate quantity, wood material preferences, color guidelines, or delivery timeline requests..."
-                      className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition resize-none"
+                      className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition resize-none"
                     />
                   </div>
 

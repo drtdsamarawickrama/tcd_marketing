@@ -166,8 +166,8 @@ export default function ContactUsPage() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        placeholder="John Doe"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        placeholder="Sunil Perera"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
 
@@ -179,8 +179,8 @@ export default function ContactUsPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        placeholder="john@example.com"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        placeholder="sunil@gmail.com"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
                   </div>
@@ -194,7 +194,7 @@ export default function ContactUsPage() {
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="+94 77 123 4567"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
 
@@ -207,7 +207,7 @@ export default function ContactUsPage() {
                         onChange={handleChange}
                         required
                         placeholder="e.g. Delivery Inquiry"
-                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition"
+                        className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition"
                       />
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export default function ContactUsPage() {
                       required
                       rows={5}
                       placeholder="Write your message detail here..."
-                      className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:bg-white focus:border-red-500 transition resize-none"
+                      className="w-full text-xs p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-slate-900 focus:outline-none focus:bg-white focus:border-red-500 transition resize-none"
                     />
                   </div>
 

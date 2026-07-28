@@ -2,10 +2,10 @@
 <div id="confirm-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 opacity-0 pointer-events-none transition-all duration-300">
     <div class="bg-white border border-slate-100 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform scale-90 opacity-0 transition-all duration-300" id="confirm-modal-box">
         <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full bg-red-50 text-red-650 flex items-center justify-center text-2xl flex-shrink-0 animate-bounce">
+            <div class="w-12 h-12 rounded-full bg-red-50 text-red-650 flex items-center justify-center text-2xl shrink-0 animate-bounce">
                 ⚠️
             </div>
-            <div class="space-y-2 flex-grow">
+            <div class="space-y-2 grow">
                 <h3 class="text-lg font-black text-slate-900">Re-initialize Database?</h3>
                 <p class="text-xs text-slate-500 leading-relaxed">
                     Warning: This action will completely reset your database storage. It will drop all tables and delete:
