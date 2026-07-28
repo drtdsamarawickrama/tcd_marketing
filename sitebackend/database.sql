@@ -49,3 +49,27 @@ CREATE TABLE IF NOT EXISTS `users` (
     `password` VARCHAR(255) NOT NULL,                     -- bcrypt hashed password (never plain text)
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Table to store user cart items linked to users and items tables
+CREATE TABLE IF NOT EXISTS `cart_items` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,                     -- Relationship link to users table
+    `item_id` INT NOT NULL,                     -- Relationship link to items table
+    `quantity` INT DEFAULT 1,                   -- Quantity of item in cart
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE,
+    UNIQUE KEY `user_item_cart` (`user_id`, `item_id`) -- Prevents duplicate entries for the same item in user's cart
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table to store user wishlist items linked to users and items tables
+CREATE TABLE IF NOT EXISTS `wishlist_items` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,                     -- Relationship link to users table
+    `item_id` INT NOT NULL,                     -- Relationship link to items table
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE,
+    UNIQUE KEY `user_item_wishlist` (`user_id`, `item_id`) -- Prevents duplicate entries in user's wishlist
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

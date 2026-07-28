@@ -8,6 +8,7 @@ import { BACKEND_URL } from "@/components/apiConfig";
 import { Product } from "@/components/useProducts";
 import { useAuth } from "@/components/useAuth";
 import { useCart } from "@/components/useCart";
+import { useWishlist } from "@/components/useWishlist";
 import Link from "next/link";
 
 // Categories label mapping dictionary
@@ -77,6 +78,8 @@ export default function ProductDetailPage() {
   const [addedToCart, setAddedToCart] = useState(false); // Brief feedback state after adding
   const { user, isLoggedIn } = useAuth();
   const { addToCart, isInCart } = useCart(user?.id ?? null);
+  const { toggleWishlist, isInWishlist } = useWishlist(user?.id ?? null);
+  const isWishlisted = product ? isInWishlist(product.id) : false;
 
   // Fetch product detail on mount
   useEffect(() => {
@@ -317,37 +320,84 @@ export default function ProductDetailPage() {
             {/* CTA Action Buttons */}
             <div className="mt-8 pt-6 border-t border-zinc-100 flex flex-col gap-3">
 
-              {/* Add to Cart Button - works even when not logged in (guest cart) */}
-              {product && (
-                <button
-                  onClick={() => {
-                    addToCart({
-                      id: product.id,
-                      name: product.name,
-                      price: product.price,
-                      image: product.image || null,
-                      icon: product.icon,
-                      category: product.category,
-                    });
-                    setAddedToCart(true);
-                    // Reset the button feedback text after 2 seconds
-                    setTimeout(() => setAddedToCart(false), 2000);
-                  }}
-                  className={`w-full font-extrabold text-sm py-4 px-8 rounded-lg transition shadow-md flex items-center justify-center gap-2 ${
-                    isInCart(product.id)
-                      ? "bg-green-600 hover:bg-green-700 text-white shadow-green-500/10"
-                      : "bg-slate-900 hover:bg-slate-800 text-white"
-                  }`}
-                >
-                  {addedToCart ? (
-                    <><span>✓</span> Added to Cart!</>
-                  ) : isInCart(product.id) ? (
-                    <><span>🛒</span> In Cart - Add Another</>
+              {/* Add to Cart Button & Wishlist Heart Row */}
+              <div className="flex gap-3">
+                {product && (
+                  isLoggedIn ? (
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: product.id,
+                          name: product.name,
+                          price: product.price,
+                          image: product.image || null,
+                          icon: product.icon,
+                          category: product.category,
+                        });
+                        setAddedToCart(true);
+                        // Reset the button feedback text after 2 seconds
+                        setTimeout(() => setAddedToCart(false), 2000);
+                      }}
+                      className={`grow font-extrabold text-sm py-4 px-8 rounded-lg transition shadow-md flex items-center justify-center gap-2 ${
+                        isInCart(product.id)
+                          ? "bg-green-600 hover:bg-green-700 text-white shadow-green-500/10"
+                          : "bg-slate-900 hover:bg-slate-800 text-white"
+                      }`}
+                    >
+                      {addedToCart ? (
+                        <><span>✓</span> Added to Cart!</>
+                      ) : isInCart(product.id) ? (
+                        <><span>🛒</span> In Cart - Add Another</>
+                      ) : (
+                        <><span>🛒</span> Add to Cart</>
+                      )}
+                    </button>
                   ) : (
-                    <><span>🛒</span> Add to Cart</>
-                  )}
-                </button>
-              )}
+                    <Link
+                      href="/login"
+                      className="grow bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-sm py-4 px-8 rounded-lg transition text-center shadow-md flex items-center justify-center gap-2"
+                    >
+                      🔒 Login to Add to Cart
+                    </Link>
+                  )
+                )}
+
+                {/* Heart Toggle Button */}
+                {product && (
+                  <button
+                    onClick={() => {
+                      toggleWishlist({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image || null,
+                        icon: product.icon,
+                        category: product.category,
+                      });
+                    }}
+                    className={`px-5 py-4 border rounded-lg transition shadow-xs flex items-center justify-center ${
+                      isWishlisted
+                        ? "border-red-200 bg-red-50 text-red-600 hover:bg-red-100"
+                        : "border-slate-300 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                    }`}
+                    title="Toggle Wishlist"
+                  >
+                    <svg
+                      className={`w-6 h-6 transition ${isWishlisted ? "fill-red-600 stroke-red-600 text-red-600" : "text-slate-500 hover:text-red-600"}`}
+                      fill={isWishlisted ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
 
               {/* Enquire Price Row */}
               <div className="flex flex-col sm:flex-row gap-3">

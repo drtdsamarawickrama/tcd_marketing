@@ -134,6 +134,31 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "✔ Users table ready (login/signup).<br>";
 
+    // Create cart_items table linked to users and items
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `cart_items` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `item_id` INT NOT NULL,
+        `quantity` INT DEFAULT 1,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+        FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE,
+        UNIQUE KEY `user_item_cart` (`user_id`, `item_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "✔ Cart items table ready.<br>";
+
+    // Create wishlist_items table linked to users and items
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `wishlist_items` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `item_id` INT NOT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+        FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE,
+        UNIQUE KEY `user_item_wishlist` (`user_id`, `item_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "✔ Wishlist items table ready.<br>";
+
     echo "<h3>Setup completed successfully!</h3>";
     echo "<a href='../index.php' style='padding: 10px 15px; background: #dc2626; color: white; text-decoration: none; border-radius: 5px; font-family: sans-serif; font-weight: bold;'>Go to Admin Dashboard</a>";
 

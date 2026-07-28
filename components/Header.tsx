@@ -119,14 +119,7 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
             )}
 
             {/* WISHLIST Button */}
-            <a href="#" className="flex items-center gap-2 text-slate-800 hover:text-red-600 transition group">
-              <div className="border border-zinc-200 p-1.5 rounded-full group-hover:border-red-500 transition">
-                <svg className="w-5 h-5 text-slate-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </div>
-              <span className="text-xs font-black tracking-wide uppercase text-slate-900 group-hover:text-red-600">WISHLIST</span>
-            </a>
+            <WishlistButtonLink user={user} />
 
             {/* CART Button */}
             <CartButtonLink user={user} />
@@ -469,6 +462,28 @@ function CartButtonLink({ user }: { user: any }) {
           Rs. {cartTotal.toLocaleString("en-LK")}
         </span>
       </div>
+    </Link>
+  );
+}
+
+// Sub-component to prevent full header re-renders on wishlist count state changes
+function WishlistButtonLink({ user }: { user: any }) {
+  const { useWishlist } = require("./useWishlist");
+  const { wishlistCount } = useWishlist(user?.id ?? null);
+  
+  return (
+    <Link href="/wishlist" className="flex items-center gap-2 text-slate-800 hover:text-red-600 transition group">
+      <div className="relative border border-zinc-200 p-1.5 rounded-full group-hover:border-red-500 transition">
+        {wishlistCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] font-black rounded-xs px-1 py-0.5 min-w-[15px] h-3.5 flex items-center justify-center animate-pulse">
+            {wishlistCount}
+          </span>
+        )}
+        <svg className="w-5 h-5 text-slate-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </div>
+      <span className="text-xs font-black tracking-wide uppercase text-slate-900 group-hover:text-red-600">WISHLIST</span>
     </Link>
   );
 }

@@ -80,48 +80,51 @@ export default function SignupPage() {
   if (loading) return null;
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-10 relative overflow-hidden">
+    // Pure white background to match the site's clean white theme
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-10 relative overflow-hidden">
 
-      {/* Animated background blobs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+      {/* Layered glowing ambient background blobs for soft visual depth */}
+      <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-red-500/5 to-rose-500/0 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tl from-rose-500/5 to-amber-500/0 rounded-full blur-3xl pointer-events-none"></div>
 
-      {/* Signup Card */}
+      {/* Outer wrapper */}
       <div className="w-full max-w-md relative z-10">
 
-        {/* Brand header */}
+        {/* Brand header with Logo and dark bold text */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <img src="/logo.jpeg" alt="TCD Marketing" className="h-14 w-auto mx-auto rounded-lg object-contain" />
+          <Link href="/" className="inline-block hover:scale-102 transition-transform duration-300">
+            <img src="/logo.jpeg" alt="TCD Marketing" className="h-16 w-auto mx-auto rounded-xl object-contain shadow-sm border border-slate-200" />
           </Link>
-          <h1 className="text-2xl font-black text-white mt-4 tracking-tight">Create Account</h1>
-          <p className="text-slate-400 text-sm mt-1">Join TCD Marketing - Sri Lanka&apos;s trusted furniture store</p>
+          <h1 className="text-3xl font-black text-slate-900 mt-4 tracking-tight">
+            Create Account
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">Join TCD Marketing - Sri Lanka&apos;s trusted furniture store</p>
         </div>
 
-        {/* Glass Card */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+        {/* Premium Light Card with soft shadow */}
+        <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-xl shadow-slate-200/50 relative">
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
-            {/* Error Box */}
+            {/* Error Message Box */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+              <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl flex items-center gap-2 font-medium">
                 <span>⚠️</span>
                 <span>{error}</span>
               </div>
             )}
 
-            {/* Success Box */}
+            {/* Success Message Box */}
             {success && (
-              <div className="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+              <div className="bg-green-50 border border-green-100 text-green-600 text-sm px-4 py-3 rounded-xl flex items-center gap-2 font-medium">
                 <span>✅</span>
                 <span>{success}</span>
               </div>
             )}
 
-            {/* Username Input */}
+            {/* Username Input Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Username</label>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Username</label>
               <input
                 type="text"
                 value={username}
@@ -130,14 +133,14 @@ export default function SignupPage() {
                 minLength={3}
                 maxLength={30}
                 placeholder="e.g. john_perera"
-                className="w-full bg-white/5 border border-white/10 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all duration-300"
               />
-              <p className="text-[11px] text-slate-600">3-30 characters, letters, numbers and underscores only</p>
+              <p className="text-[11px] text-slate-400">3-30 characters, letters, numbers and underscores only</p>
             </div>
 
-            {/* Email Input */}
+            {/* Email Input Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email Address</label>
               <input
                 type="email"
                 value={email}
@@ -145,13 +148,13 @@ export default function SignupPage() {
                 required
                 autoComplete="email"
                 placeholder="you@example.com"
-                className="w-full bg-white/5 border border-white/10 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all duration-300"
               />
             </div>
 
-            {/* Password Input with strength meter */}
+            {/* Password Input Field with Strength Indicator */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Password</label>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password</label>
               <div className="relative">
                 <input
                   type={showPass ? "text" : "password"}
@@ -160,36 +163,36 @@ export default function SignupPage() {
                   required
                   autoComplete="new-password"
                   placeholder="At least 6 characters"
-                  className="w-full bg-white/5 border border-white/10 text-white placeholder:text-slate-600 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10 transition-all duration-300"
                 />
                 <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition text-xs font-bold">
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition text-xs font-bold">
                   {showPass ? "HIDE" : "SHOW"}
                 </button>
               </div>
-              {/* Password strength meter bar - shows 4 segments filling up */}
+              {/* Password strength bar indicator */}
               {password && (
                 <div className="flex gap-1 mt-1">
                   {[1, 2, 3, 4].map(level => (
                     <div
                       key={level}
                       className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                        level <= passwordStrength ? strengthInfo.color : "bg-white/10"
+                        level <= passwordStrength ? strengthInfo.color : "bg-slate-100"
                       }`}
                     ></div>
                   ))}
                   <span className={`text-[11px] font-bold ml-1 ${
-                    passwordStrength <= 1 ? "text-red-400" :
-                    passwordStrength === 2 ? "text-orange-400" :
-                    passwordStrength === 3 ? "text-yellow-400" : "text-green-400"
+                    passwordStrength <= 1 ? "text-red-500" :
+                    passwordStrength === 2 ? "text-orange-500" :
+                    passwordStrength === 3 ? "text-yellow-500" : "text-green-500"
                   }`}>{strengthInfo.label}</span>
                 </div>
               )}
             </div>
 
-            {/* Confirm Password Input */}
+            {/* Confirm Password Input Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Confirm Password</label>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Confirm Password</label>
               <div className="relative">
                 <input
                   type={showConfirm ? "text" : "password"}
@@ -198,32 +201,32 @@ export default function SignupPage() {
                   required
                   autoComplete="new-password"
                   placeholder="Repeat your password"
-                  className={`w-full bg-white/5 border text-white placeholder:text-slate-600 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none transition ${
+                  className={`w-full bg-slate-50 border text-slate-900 placeholder:text-slate-400 rounded-xl px-4 py-3 pr-12 text-sm focus:outline-none transition-all duration-300 ${
                     confirmPass && confirmPass !== password
-                      ? "border-red-500/60"
+                      ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
                       : confirmPass && confirmPass === password
-                      ? "border-green-500/60"
-                      : "border-white/10 focus:border-red-500"
+                      ? "border-green-300 focus:border-green-500 focus:ring-4 focus:ring-green-500/10"
+                      : "border-slate-200 focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
                   }`}
                 />
                 <button type="button" onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition text-xs font-bold">
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition text-xs font-bold">
                   {showConfirm ? "HIDE" : "SHOW"}
                 </button>
               </div>
-              {/* Show match indicator */}
+              {/* Passwords matching helper label */}
               {confirmPass && (
-                <p className={`text-[11px] font-semibold ${confirmPass === password ? "text-green-400" : "text-red-400"}`}>
+                <p className={`text-[11px] font-semibold ${confirmPass === password ? "text-green-600" : "text-red-600"}`}>
                   {confirmPass === password ? "✓ Passwords match" : "✗ Passwords do not match"}
                 </p>
               )}
             </div>
 
-            {/* Submit Button */}
+            {/* Premium Gradient Submit Button */}
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-900 text-white font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-red-900/30 flex items-center justify-center gap-2 mt-1"
+              className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 active:scale-[0.98] disabled:from-red-400 disabled:to-rose-400 text-white font-extrabold py-3.5 rounded-xl transition-all duration-300 shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2 mt-1"
             >
               {submitting ? (
                 <>
@@ -237,17 +240,18 @@ export default function SignupPage() {
 
           </form>
 
-          {/* Link to Login */}
+          {/* Link to navigate to login page */}
           <p className="text-center text-slate-500 text-sm mt-6">
             Already have an account?{" "}
-            <Link href="/login" className="text-red-400 font-bold hover:text-red-300 transition">
+            <Link href="/login" className="text-red-600 font-extrabold hover:text-red-500 hover:underline transition-all">
               Sign In
             </Link>
           </p>
         </div>
 
+        {/* Back Link */}
         <p className="text-center mt-6">
-          <Link href="/" className="text-slate-600 hover:text-slate-400 text-xs transition">
+          <Link href="/" className="text-slate-500 hover:text-slate-300 text-xs transition-colors">
             ← Back to TCD Marketing
           </Link>
         </p>
