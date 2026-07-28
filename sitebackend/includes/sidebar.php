@@ -43,7 +43,7 @@
         <?php endforeach; ?>
 
         <!-- Separator for separate management sections -->
-        <li class="mt-2 pt-2 border-t border-slate-800">
+        <li class="mt-2 pt-2 border-t border-slate-800 flex flex-col gap-2">
             <!-- Banners management link - navigates to banner page section -->
             <a href="banners.php" class="category-item-banners flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-slate-800 hover:text-white transition duration-200 font-semibold text-sm text-slate-400 <?php echo (basename($_SERVER['PHP_SELF']) == 'banners.php') ? 'active bg-slate-800 text-white border-l-4 border-red-600 pl-2' : ''; ?>">
                 <div class="flex items-center gap-3">
@@ -52,13 +52,21 @@
                 </div>
                 <span class="text-[10px] bg-blue-900/50 text-blue-400 font-bold px-2 py-0.5 rounded-full">Slider</span>
             </a>
+            <!-- Gallery management link - navigates to gallery page section -->
+            <a href="gallery.php" class="category-item-gallery flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-slate-800 hover:text-white transition duration-200 font-semibold text-sm text-slate-400 <?php echo (basename($_SERVER['PHP_SELF']) == 'gallery.php') ? 'active bg-slate-800 text-white border-l-4 border-red-600 pl-2' : ''; ?>">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg">📸</span>
+                    <span>Manage Gallery</span>
+                </div>
+                <span class="text-[10px] bg-emerald-900/50 text-emerald-400 font-bold px-2 py-0.5 rounded-full">B2B</span>
+            </a>
         </li>
     </ul>
 
-    <!-- Script to handle category redirects from banners.php back to index.php -->
+    <!-- Script to handle category redirects from banners.php or gallery.php back to index.php -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const isBannersPage = window.location.pathname.endsWith('banners.php');
+            const isBannersPage = window.location.pathname.endsWith('banners.php') || window.location.pathname.endsWith('gallery.php');
             if (isBannersPage) {
                 document.querySelectorAll('.category-item').forEach(item => {
                     item.addEventListener('click', () => {

@@ -200,6 +200,22 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "✔ Wishlist items table ready.<br>";
 
+    // Create gallery table supporting YouTube video embeds or image posts
+    $pdo->exec("DROP TABLE IF EXISTS `gallery`");
+    $pdo->exec("CREATE TABLE `gallery` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `title` VARCHAR(255) NOT NULL,
+        `category` VARCHAR(50) NOT NULL,
+        `type` VARCHAR(20) NOT NULL,
+        `image_path` VARCHAR(255) DEFAULT NULL,
+        `youtube_url` VARCHAR(255) DEFAULT NULL,
+        `description` TEXT DEFAULT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    echo "✔ Gallery table created.<br>";
+
+    // Gallery table is initialized empty so the admin has full control.
+
     // Re-enable foreign key checks after schema generation
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
 
