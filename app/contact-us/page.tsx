@@ -69,8 +69,8 @@ export default function ContactUsPage() {
       {/* Main Container */}
       <main className="flex-grow">
         
-        {/* Banner Section */}
-        <section className="bg-gradient-to-r from-slate-900 to-slate-950 text-white py-16 px-4 text-center">
+        {/* Banner Section - fades in */}
+        <section className="bg-gradient-to-r from-slate-900 to-slate-950 text-white py-16 px-4 text-center animate-fade-in">
           <div className="max-w-4xl mx-auto space-y-4">
             <span className="text-red-500 text-xs font-black tracking-widest uppercase">
               Get In Touch
@@ -85,18 +85,18 @@ export default function ContactUsPage() {
         {/* Contact info grid & Contact form */}
         <section className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
           
-          {/* Left Column: Direct channels (5 cols) */}
-          <div className="lg:col-span-5 space-y-8">
+          {/* Left Column: Direct channels (5 cols) - slides up */}
+          <div className="lg:col-span-5 space-y-8 animate-slide-up">
             <div className="space-y-4">
               <h2 className="text-2xl font-black text-slate-900">Reach Us Directly</h2>
-              <p className="text-slate-650 text-sm leading-relaxed">
+              <p className="text-slate-655 text-sm leading-relaxed">
                 Whether you need technical support for appliances or wish to verify stock levels at your nearest store, we are happy to assist.
               </p>
             </div>
 
             {/* Support detail cards */}
             <div className="space-y-4">
-              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4">
+              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4 hover:scale-102 transition duration-200">
                 <div className="text-2xl">📞</div>
                 <div>
                   <h3 className="font-extrabold text-slate-900 text-xs uppercase">Call Center Hotline</h3>
@@ -105,7 +105,7 @@ export default function ContactUsPage() {
                 </div>
               </div>
 
-              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4">
+              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4 hover:scale-102 transition duration-200">
                 <div className="text-2xl">🏢</div>
                 <div>
                   <h3 className="font-extrabold text-slate-900 text-xs uppercase">Head Office Address</h3>
@@ -116,7 +116,7 @@ export default function ContactUsPage() {
                 </div>
               </div>
 
-              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4">
+              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4 hover:scale-102 transition duration-200">
                 <div className="text-2xl">✉️</div>
                 <div>
                   <h3 className="font-extrabold text-slate-900 text-xs uppercase">General Email Support</h3>
@@ -126,9 +126,9 @@ export default function ContactUsPage() {
             </div>
           </div>
 
-          {/* Right Column: Interactive Form (7 cols) */}
+          {/* Right Column: Interactive Form (7 cols) - scales up dynamically */}
           <div className="lg:col-span-7">
-            <div className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-xs">
+            <div className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-xs animate-scale-up animation-delay-150 animation-fill-both">
               
               {isSubmitted ? (
                 // Submit success UI layout

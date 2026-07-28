@@ -38,12 +38,6 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
             <a href="/gallery" className="hover:text-red-600 transition">Gallery</a>
             <span className="text-zinc-300">|</span>
             <a href="/contact-us" className="hover:text-red-600 transition">Contact Us</a>
-            <span className="text-zinc-300">|</span>
-            <div className="flex gap-1.5 ml-1">
-              <span className="font-semibold text-red-600 cursor-pointer">EN</span>
-              <span className="text-slate-400 hover:text-red-600 cursor-pointer">සිං</span>
-              <span className="text-slate-400 hover:text-red-600 cursor-pointer">தமிழ்</span>
-            </div>
           </div>
         </div>
       </div>

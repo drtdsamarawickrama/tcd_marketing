@@ -184,7 +184,7 @@
                 <input type="hidden" id="image_bg" name="image_bg" value="from-amber-200 to-amber-300">
                 <div class="grid grid-cols-4 gap-1.5 mt-1">
                     <?php foreach ($gradient_presets as $classes => $label): ?>
-                        <div class="gradient-option h-8 rounded-md cursor-pointer border-2 border-transparent hover:scale-105 transition-all duration-150 <?= $classes ?>" 
+                        <div class="gradient-option h-8 rounded-md cursor-pointer border-2 border-transparent hover:scale-105 transition-all duration-150 bg-gradient-to-br <?= $classes ?>" 
                              data-classes="<?= $classes ?>" 
                              title="<?= $label ?>"></div>
                     <?php endforeach; ?>

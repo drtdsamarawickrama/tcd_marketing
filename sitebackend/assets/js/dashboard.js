@@ -584,13 +584,9 @@ if (addForm) {
             formData.append('gallery_urls', galleryUrlsVal);
         }
 
-        // When editing, pass existing additional_images so backend preserves if no new files uploaded
+        // When editing, pass existing additional_images id
         if (editingItemId !== null) {
             formData.append('id', editingItemId);
-            const existingItem = itemsList.find(itm => parseInt(itm.id) === parseInt(editingItemId));
-            if (existingItem && existingItem.additional_images && !galleryUrlsVal && (!galleryFilesInput || galleryFilesInput.files.length === 0)) {
-                formData.append('additional_images', existingItem.additional_images);
-            }
         }
 
         const targetApi = editingItemId !== null ? 'api/update_item.php' : 'api/add_item.php';

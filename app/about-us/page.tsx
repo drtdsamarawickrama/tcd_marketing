@@ -17,8 +17,8 @@ export default function AboutUsPage() {
       {/* 2. Main Content Area */}
       <main className="flex-grow">
         
-        {/* Banner section with a rich dark gradient and description */}
-        <section className="bg-gradient-to-r from-slate-800 to-slate-950 text-white py-16 px-4 text-center">
+        {/* Banner section with a rich dark gradient and description - fades in */}
+        <section className="bg-gradient-to-r from-slate-800 to-slate-950 text-white py-16 px-4 text-center animate-fade-in">
           <div className="max-w-4xl mx-auto space-y-4">
             <span className="text-red-500 text-xs font-black tracking-widest uppercase">
               Establishment & Growth
@@ -32,7 +32,8 @@ export default function AboutUsPage() {
 
         {/* Brand identity overview section */}
         <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
+          {/* Text content - slides up */}
+          <div className="space-y-6 animate-slide-up">
             <div className="inline-block bg-red-50 text-red-600 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">
               Our Journey
             </div>
@@ -47,8 +48,8 @@ export default function AboutUsPage() {
             </p>
           </div>
           
-          {/* Custom graphic card matching the theme */}
-          <div className="bg-gradient-to-tr from-red-600 to-amber-500 p-8 rounded-2xl text-white shadow-xl flex flex-col justify-between min-h-[300px] relative overflow-hidden group">
+          {/* Custom graphic card matching the theme - scales up with delay */}
+          <div className="bg-gradient-to-tr from-red-600 to-amber-500 p-8 rounded-2xl text-white shadow-xl flex flex-col justify-between min-h-[300px] relative overflow-hidden group animate-scale-up animation-delay-150 animation-fill-both">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-2xl transform translate-x-12 -translate-y-12 group-hover:scale-110 transition duration-300"></div>
             <div>
               <span className="text-[10px] font-black uppercase tracking-widest opacity-80">Our Vision</span>
@@ -73,11 +74,11 @@ export default function AboutUsPage() {
               </p>
             </div>
 
-            {/* Core Pillars grid with hover micro-animations */}
+            {/* Core Pillars grid with hover micro-animations and staggered entrance */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               
               {/* Card 1: Quality Assurance */}
-              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200">
+              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200 animate-scale-up animation-fill-both">
                 <div className="w-10 h-10 bg-red-50 text-red-600 rounded-lg flex items-center justify-center text-xl font-bold mb-4">🛡️</div>
                 <h3 className="font-extrabold text-slate-900 text-sm mb-2">Quality Assurance</h3>
                 <p className="text-slate-500 text-[11px] leading-relaxed">
@@ -86,7 +87,7 @@ export default function AboutUsPage() {
               </div>
 
               {/* Card 2: Customer Satisfaction */}
-              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200">
+              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200 animate-scale-up animation-delay-100 animation-fill-both">
                 <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-lg flex items-center justify-center text-xl font-bold mb-4">🤝</div>
                 <h3 className="font-extrabold text-slate-900 text-sm mb-2">Customer Care</h3>
                 <p className="text-slate-500 text-[11px] leading-relaxed">
@@ -95,7 +96,7 @@ export default function AboutUsPage() {
               </div>
 
               {/* Card 3: Islandwide Network */}
-              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200">
+              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200 animate-scale-up animation-delay-200 animation-fill-both">
                 <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-xl font-bold mb-4">🚚</div>
                 <h3 className="font-extrabold text-slate-900 text-sm mb-2">Safe Delivery</h3>
                 <p className="text-slate-500 text-[11px] leading-relaxed">
@@ -104,7 +105,7 @@ export default function AboutUsPage() {
               </div>
 
               {/* Card 4: Affordable Pricing */}
-              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200">
+              <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200 animate-scale-up animation-delay-300 animation-fill-both">
                 <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-xl font-bold mb-4">💎</div>
                 <h3 className="font-extrabold text-slate-900 text-sm mb-2">Affordable Luxury</h3>
                 <p className="text-slate-500 text-[11px] leading-relaxed">
@@ -129,7 +130,7 @@ export default function AboutUsPage() {
           <div className="relative border-l-2 border-zinc-200 max-w-3xl mx-auto pl-6 md:pl-8 space-y-10 py-2">
             
             {/* Timeline item 1 */}
-            <div className="relative">
+            <div className="relative animate-slide-up animation-fill-both">
               <span className="absolute -left-[35px] md:-left-[43px] top-1.5 bg-red-600 w-4 h-4 rounded-full border-4 border-white shadow-sm"></span>
               <span className="text-xs font-black text-red-600 uppercase tracking-widest">2018</span>
               <h3 className="font-extrabold text-slate-950 text-sm mt-1">Inception & Showroom Setup</h3>
@@ -139,7 +140,7 @@ export default function AboutUsPage() {
             </div>
 
             {/* Timeline item 2 */}
-            <div className="relative">
+            <div className="relative animate-slide-up animation-delay-150 animation-fill-both">
               <span className="absolute -left-[35px] md:-left-[43px] top-1.5 bg-zinc-300 w-4 h-4 rounded-full border-4 border-white shadow-sm"></span>
               <span className="text-xs font-black text-zinc-600 uppercase tracking-widest">2021</span>
               <h3 className="font-extrabold text-slate-950 text-sm mt-1">Electronics & Appliances Expansion</h3>
@@ -149,7 +150,7 @@ export default function AboutUsPage() {
             </div>
 
             {/* Timeline item 3 */}
-            <div className="relative">
+            <div className="relative animate-slide-up animation-delay-300 animation-fill-both">
               <span className="absolute -left-[35px] md:-left-[43px] top-1.5 bg-zinc-300 w-4 h-4 rounded-full border-4 border-white shadow-sm"></span>
               <span className="text-xs font-black text-zinc-600 uppercase tracking-widest">2025</span>
               <h3 className="font-extrabold text-slate-950 text-sm mt-1">E-Commerce & Digital Showrooms</h3>

@@ -36,8 +36,8 @@ export default function GalleryPage() {
       {/* Main Container */}
       <main className="flex-grow">
         
-        {/* Banner Section */}
-        <section className="bg-gradient-to-r from-slate-900 to-slate-950 text-white py-16 px-4 text-center">
+        {/* Banner Section - fades in on load */}
+        <section className="bg-gradient-to-r from-slate-900 to-slate-950 text-white py-16 px-4 text-center animate-fade-in">
           <div className="max-w-4xl mx-auto space-y-4">
             <span className="text-amber-500 text-xs font-black tracking-widest uppercase">
               Design & Inspiration
@@ -52,8 +52,8 @@ export default function GalleryPage() {
         {/* Gallery grid & Filter buttons */}
         <section className="max-w-7xl mx-auto px-4 py-12 space-y-10">
           
-          {/* Tab Filter Button Bar */}
-          <div className="flex flex-wrap gap-2 justify-center items-center">
+          {/* Tab Filter Button Bar - slides up */}
+          <div className="flex flex-wrap gap-2 justify-center items-center animate-slide-up">
             {["all", "living", "bedroom", "dining", "office", "showrooms"].map((filter) => (
               <button 
                 key={filter}
@@ -74,7 +74,7 @@ export default function GalleryPage() {
             {filteredItems.map((item) => (
               <div 
                 key={item.id}
-                className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition duration-300 group flex flex-col h-full"
+                className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group flex flex-col h-full animate-scale-up animation-fill-both"
               >
                 {/* Visual Gradient Display matching category theme */}
                 <div className={`h-48 bg-gradient-to-tr ${item.gradient} flex items-center justify-center p-6 relative overflow-hidden`}>

@@ -85,30 +85,40 @@ export default function Hero() {
             
             {/* Left side text descriptors */}
             <div className="space-y-3 sm:space-y-4">
-              {/* Pill tag badge */}
+              {/* Pill tag badge - slides up on activation */}
               {slide.tag && (
-                <span className="inline-block bg-white/20 text-white px-3 py-1 text-xs font-bold rounded-full backdrop-blur-md">
+                <span className={`inline-block bg-white/20 text-white px-3 py-1 text-xs font-bold rounded-full backdrop-blur-md transition-all duration-700 ${
+                  idx === activeSlide ? "animate-slide-up animation-fill-both" : "opacity-0"
+                }`}>
                   {slide.tag}
                 </span>
               )}
-              {/* Main title */}
-              <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none drop-shadow-md">
+              {/* Main title - slides up after a short delay */}
+              <h1 className={`text-3xl sm:text-5xl font-black tracking-tight leading-none drop-shadow-md transition-all duration-700 ${
+                idx === activeSlide ? "animate-slide-up animation-delay-100 animation-fill-both" : "opacity-0"
+              }`}>
                 {slide.title || "Welcome to TCD Marketing"}
               </h1>
-              {/* Yellow subtitle tagline */}
+              {/* Yellow subtitle tagline - slides up with medium delay */}
               {slide.subtitle && (
-                <p className="text-xl sm:text-2xl font-bold text-yellow-300 drop-shadow-sm">
+                <p className={`text-xl sm:text-2xl font-bold text-yellow-300 drop-shadow-sm transition-all duration-700 ${
+                  idx === activeSlide ? "animate-slide-up animation-delay-200 animation-fill-both" : "opacity-0"
+                }`}>
                   {slide.subtitle}
                 </p>
               )}
-              {/* Body description text */}
+              {/* Body description text - slides up with longer delay */}
               {slide.description && (
-                <p className="text-sm sm:text-base text-zinc-100 max-w-md hidden sm:block leading-relaxed">
+                <p className={`text-sm sm:text-base text-zinc-100 max-w-md hidden sm:block leading-relaxed transition-all duration-700 ${
+                  idx === activeSlide ? "animate-slide-up animation-delay-300 animation-fill-both" : "opacity-0"
+                }`}>
                   {slide.description}
                 </p>
               )}
-              {/* CTA Button - links to configured URL */}
-              <div className="pt-2">
+              {/* CTA Button - pops in with scale animation */}
+              <div className={`pt-2 transition-all duration-700 ${
+                idx === activeSlide ? "animate-scale-up animation-delay-400 animation-fill-both" : "opacity-0"
+              }`}>
                 {slide.link_url ? (
                   <Link
                     href={slide.link_url}
@@ -125,10 +135,12 @@ export default function Hero() {
             </div>
 
             {/* Right side - Premium floating product showcase */}
-            <div className="hidden md:flex justify-center items-center">
+            <div className={`hidden md:flex justify-center items-center transition-all duration-1000 ${
+              idx === activeSlide ? "animate-scale-up animation-delay-100 animation-fill-both" : "opacity-0"
+            }`}>
               {slide.image ? (
-                // Premium product showcase frame with glow and dramatic shadow
-                <div className="relative group">
+                // Premium product showcase frame with glow, dramatic shadow, and gentle floating loop
+                <div className="relative group animate-float">
                   {/* Outer ambient glow ring behind image */}
                   <div className="absolute -inset-3 rounded-[2rem] bg-white/15 blur-xl opacity-70 group-hover:opacity-100 transition duration-500"></div>
                   {/* Bottom dramatic drop shadow layer */}
@@ -145,8 +157,8 @@ export default function Hero() {
                   </div>
                 </div>
               ) : (
-                // Fallback decorative card if banner image is not specified
-                <div className="relative group">
+                // Fallback decorative card if banner image is not specified - with gentle float loop
+                <div className="relative group animate-float">
                   <div className="absolute -inset-3 rounded-[2rem] bg-white/10 blur-xl opacity-60 group-hover:opacity-90 transition duration-500"></div>
                   <div className="absolute -bottom-4 left-4 right-4 h-12 bg-black/30 blur-2xl rounded-full"></div>
                   <div className="relative w-80 h-80 rounded-[2rem] border border-white/10 bg-white/10 backdrop-blur-lg flex flex-col items-center justify-center p-8 text-center shadow-[0_30px_60px_rgba(0,0,0,0.4)] ring-1 ring-white/10 overflow-hidden transform hover:scale-105 hover:-translate-y-1 transition-all duration-500">

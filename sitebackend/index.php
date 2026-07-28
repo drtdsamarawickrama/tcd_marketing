@@ -126,7 +126,7 @@ $gradient_presets = [
                 <p class="text-sm text-slate-500 mt-1">Add products individually to any category separate and deploy them instantly.</p>
             </div>
             <div>
-                <a href="api/setup_db.php" class="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition duration-150 inline-flex items-center gap-2">
+                <a href="api/setup_db.php" onclick="openConfirmModal(event)" class="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold py-2 px-4 rounded-lg text-sm shadow-sm transition duration-150 inline-flex items-center gap-2">
                     🔄 Re-initialize DB
                 </a>
             </div>
@@ -156,6 +156,9 @@ $gradient_presets = [
 
     <!-- Container for dynamic alert toasts -->
     <div class="toast-container fixed top-6 right-6 z-1000 flex flex-col gap-2.5" id="toast-box"></div>
+
+    <!-- Custom Animated Confirmation Modal -->
+    <?php include 'includes/confirm_modal.php'; ?>
 
     <!-- Pure Javascript logics for Dashboard -->
     <script src="assets/js/dashboard.js"></script>

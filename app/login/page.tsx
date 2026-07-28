@@ -51,8 +51,8 @@ export default function LoginPage() {
       {/* Outer wrapper */}
       <div className="w-full max-w-md relative z-10">
 
-        {/* Brand Header with Logo and dark bold text */}
-        <div className="text-center mb-8">
+        {/* Brand Header with Logo and dark bold text - slides up on enter */}
+        <div className="text-center mb-8 animate-slide-up">
           <Link href="/" className="inline-block hover:scale-102 transition-transform duration-300">
             <img src="/logo.jpeg" alt="TCD Marketing" className="h-16 w-auto mx-auto rounded-xl object-contain shadow-sm border border-slate-200" />
           </Link>
@@ -62,8 +62,8 @@ export default function LoginPage() {
           <p className="text-slate-500 text-sm mt-1">Sign in to your TCD Marketing account</p>
         </div>
 
-        {/* Premium Light Card with soft shadow */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-xl shadow-slate-200/50 relative">
+        {/* Premium Light Card with soft shadow - pops up cleanly */}
+        <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-xl shadow-slate-200/50 relative animate-scale-up animation-delay-100 animation-fill-both">
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 

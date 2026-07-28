@@ -5,6 +5,18 @@ require_once '../config.php';
 // Set response type as JSON
 header("Content-Type: application/json; charset=UTF-8");
 
+// Helper: delete a file from uploads/ folder if it was uploaded to our server
+function deleteUploadedFile($imageUrl) {
+    if (empty($imageUrl)) return;
+    if (strpos($imageUrl, '/uploads/') !== false) {
+        $filename = basename(parse_url($imageUrl, PHP_URL_PATH));
+        $filePath = __DIR__ . '/../uploads/' . $filename;
+        if (file_exists($filePath)) {
+            unlink($filePath); // Remove physical file from disk
+        }
+    }
+}
+
 // Check if this is a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -131,6 +143,30 @@ if ($id <= 0 || empty($category) || empty($name) || empty($price)) {
 }
 
 try {
+    // Fetch existing item details to clean up overwritten images
+    $check_stmt = $pdo->prepare("SELECT `image`, `additional_images` FROM `items` WHERE `id` = :id");
+    $check_stmt->execute(['id' => $id]);
+    $existingItem = $check_stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existingItem) {
+        // Delete old main image if overwritten by a new image/url
+        if ($image !== null && $image !== $existingItem['image']) {
+            deleteUploadedFile($existingItem['image']);
+        }
+
+        // Delete any gallery image file that is no longer included in the updated gallery
+        if (!empty($additional_images_arr) && !empty($existingItem['additional_images'])) {
+            $oldGallery = json_decode($existingItem['additional_images'], true);
+            if (is_array($oldGallery)) {
+                foreach ($oldGallery as $oldUrl) {
+                    if (!in_array($oldUrl, $additional_images_arr)) {
+                        deleteUploadedFile($oldUrl);
+                    }
+                }
+            }
+        }
+    }
+
     // SQL query to update item
     $sql = "UPDATE `items` SET 
                 `category` = :category, 

@@ -56,8 +56,8 @@ export default function CorporateInquiryPage() {
       {/* Main Container */}
       <main className="flex-grow">
         
-        {/* Banner header styled with rich blue-slate gradient */}
-        <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-950 text-white py-16 px-4 text-center">
+        {/* Banner header styled with rich blue-slate gradient - fades in */}
+        <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-950 text-white py-16 px-4 text-center animate-fade-in">
           <div className="max-w-4xl mx-auto space-y-4">
             <span className="text-lime-500 text-xs font-black tracking-widest uppercase">
               B2B & Partnerships
@@ -72,8 +72,8 @@ export default function CorporateInquiryPage() {
         {/* Form and Support Info layout */}
         <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
           
-          {/* Left Column: B2B Support details (4 cols) */}
-          <div className="lg:col-span-5 space-y-8">
+          {/* Left Column: B2B Support details (4 cols) - slides up */}
+          <div className="lg:col-span-5 space-y-8 animate-slide-up">
             <div className="space-y-4">
               <h2 className="text-2xl font-black text-slate-900">Why Partner With TCD Marketing?</h2>
               <p className="text-slate-600 text-sm leading-relaxed">
@@ -83,7 +83,7 @@ export default function CorporateInquiryPage() {
 
             {/* Direct contact info cards */}
             <div className="space-y-4">
-              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4">
+              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4 hover:scale-102 transition duration-200">
                 <div className="text-2xl">📞</div>
                 <div>
                   <h3 className="font-extrabold text-slate-900 text-xs uppercase">Direct Corporate Line</h3>
@@ -92,7 +92,7 @@ export default function CorporateInquiryPage() {
                 </div>
               </div>
 
-              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4">
+              <div className="p-5 bg-white border border-zinc-200 rounded-xl flex items-start gap-4 hover:scale-102 transition duration-200">
                 <div className="text-2xl">✉️</div>
                 <div>
                   <h3 className="font-extrabold text-slate-900 text-xs uppercase">B2B Team Email</h3>
@@ -114,9 +114,9 @@ export default function CorporateInquiryPage() {
             </div>
           </div>
 
-          {/* Right Column: Inquiry Form (7 cols) */}
+          {/* Right Column: Inquiry Form (7 cols) - scales up dynamically */}
           <div className="lg:col-span-7">
-            <div className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-xs">
+            <div className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-xs animate-scale-up animation-delay-150 animation-fill-both">
               
               {isSubmitted ? (
                 // Success submit feedback container

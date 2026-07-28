@@ -25,8 +25,8 @@ export default function CartPage() {
 
       <main className="flex-grow max-w-5xl mx-auto px-4 py-10 w-full">
 
-        {/* Page Title */}
-        <div className="flex items-center justify-between mb-8">
+        {/* Page Title - fades in on load */}
+        <div className="flex items-center justify-between mb-8 animate-fade-in">
           <div>
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">My Cart</h1>
             <p className="text-sm text-slate-500 mt-0.5">
@@ -43,9 +43,9 @@ export default function CartPage() {
           )}
         </div>
 
-        {/* Not logged in notice */}
+        {/* Not logged in notice - pops in */}
         {!isLoggedIn && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6 flex items-start gap-4">
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6 flex items-start gap-4 animate-scale-up">
             <span className="text-2xl">🔒</span>
             <div>
               <p className="font-bold text-amber-800 text-sm">You are browsing as a guest</p>
@@ -62,7 +62,7 @@ export default function CartPage() {
 
         {/* Empty Cart State */}
         {cartItems.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm animate-scale-up">
             <span className="text-6xl block mb-4">🛒</span>
             <h2 className="text-xl font-extrabold text-slate-800 mb-2">Your cart is empty</h2>
             <p className="text-slate-500 text-sm mb-6">Browse our collections and add items you love!</p>
@@ -76,12 +76,12 @@ export default function CartPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
 
-            {/* Left: Cart Items List */}
-            <div className="flex flex-col gap-4">
+            {/* Left: Cart Items List - slides up smoothly */}
+            <div className="flex flex-col gap-4 animate-slide-up animation-fill-both">
               {cartItems.map(item => (
                 <div
                   key={item.id}
-                  className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex gap-0"
+                  className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex gap-0 hover:shadow-md transition duration-200"
                 >
                   {/* Product Image / Icon */}
                   <div className="w-28 sm:w-36 flex-shrink-0 bg-zinc-100 flex items-center justify-center overflow-hidden">
@@ -89,7 +89,7 @@ export default function CartPage() {
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-102 transition duration-500"
                       />
                     ) : (
                       <span className="text-4xl">{item.icon}</span>
@@ -148,8 +148,8 @@ export default function CartPage() {
               ))}
             </div>
 
-            {/* Right: Order Summary Panel */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sticky top-24">
+            {/* Right: Order Summary Panel - scales up with delay */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sticky top-24 animate-scale-up animation-delay-150 animation-fill-both">
               <h2 className="text-base font-extrabold text-slate-800 mb-5 pb-3 border-b border-zinc-100">
                 Order Summary
               </h2>

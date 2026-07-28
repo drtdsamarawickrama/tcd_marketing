@@ -23,7 +23,8 @@ export default function ProductCard({ id, name, price, oldPrice, rating, imageBg
   const isWishlisted = isInWishlist(id);
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden group hover:shadow-lg transition-all duration-200 flex flex-col justify-between relative">
+    // Reusable Product Card with entrance slide animation and smooth hover lift transformations
+    <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative animate-scale-up animation-fill-both">
       
       {/* Product Image Area linked to details */}
       <Link href={`/product/${id}`} className="block cursor-pointer">
@@ -41,11 +42,11 @@ export default function ProductCard({ id, name, price, oldPrice, rating, imageBg
               e.stopPropagation();
               toggleWishlist({ id, name, price, image: image || null, icon: icon || "🛋️", category });
             }}
-            className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs p-1.5 rounded-full border border-slate-200 hover:scale-110 transition duration-150 z-20"
+            className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs p-1.5 rounded-full border border-slate-200 hover:scale-110 active:scale-95 transition duration-150 z-20 shadow-xs"
             title="Toggle Wishlist"
           >
             <svg
-              className={`w-4 h-4 transition ${isWishlisted ? "fill-red-600 stroke-red-600 text-red-600" : "text-slate-500 hover:text-red-600"}`}
+              className={`w-4 h-4 transition-colors duration-200 ${isWishlisted ? "fill-red-600 stroke-red-600 text-red-600" : "text-slate-500 hover:text-red-600"}`}
               fill={isWishlisted ? "currentColor" : "none"}
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -54,19 +55,20 @@ export default function ProductCard({ id, name, price, oldPrice, rating, imageBg
             </svg>
           </button>
           
-          {/* If image is provided, show the image; otherwise, fallback to the emoji icon */}
+          {/* Zoom in image on hover */}
           {image ? (
             <img 
               src={image} 
               alt={name} 
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-200" 
+              className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" 
             />
           ) : (
-            icon && <span className="text-6xl group-hover:scale-115 transition duration-200">{icon}</span>
+            icon && <span className="text-6xl group-hover:scale-115 transition-transform duration-500">{icon}</span>
           )}
 
-          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-200">
-            <span className="bg-white text-slate-800 font-extrabold text-xs px-4 py-2 rounded-md hover:bg-slate-100 shadow-md">
+          {/* Overlay fade-in detail indicator */}
+          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+            <span className="bg-white text-slate-800 font-extrabold text-xs px-4 py-2 rounded-md hover:bg-slate-100 shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
               View Details
             </span>
           </div>

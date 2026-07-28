@@ -8,6 +8,9 @@ header("Content-Type: text/html; charset=UTF-8");
 try {
     echo "<h3>Setting up Damro TCD Marketing Database...</h3>";
 
+    // Disable foreign key checks temporarily to safely drop tables
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
+
     // Drop table if exists to clear placeholder data and update schema
     $pdo->exec("DROP TABLE IF EXISTS `items`");
     echo "✔ Existing table `items` dropped to clear placeholders.<br>";
@@ -158,6 +161,9 @@ try {
         UNIQUE KEY `user_item_wishlist` (`user_id`, `item_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "✔ Wishlist items table ready.<br>";
+
+    // Re-enable foreign key checks after schema generation
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
 
     echo "<h3>Setup completed successfully!</h3>";
     echo "<a href='../index.php' style='padding: 10px 15px; background: #dc2626; color: white; text-decoration: none; border-radius: 5px; font-family: sans-serif; font-weight: bold;'>Go to Admin Dashboard</a>";

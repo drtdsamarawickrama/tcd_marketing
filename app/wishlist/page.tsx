@@ -22,8 +22,8 @@ export default function WishlistPage() {
 
       <main className="flex-grow max-w-5xl mx-auto px-4 py-10 w-full">
 
-        {/* Page title and summary */}
-        <div className="mb-8">
+        {/* Page title and summary - fades in on load */}
+        <div className="mb-8 animate-fade-in">
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">My Wishlist</h1>
           <p className="text-sm text-slate-500 mt-0.5">
             {wishlistCount > 0 ? `${wishlistCount} item${wishlistCount > 1 ? "s" : ""} you have saved` : "Your wishlist is empty"}
@@ -32,7 +32,7 @@ export default function WishlistPage() {
 
         {/* Guest user notice */}
         {!isLoggedIn && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6 flex items-start gap-4">
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6 flex items-start gap-4 animate-scale-up">
             <span className="text-2xl">🔒</span>
             <div>
               <p className="font-bold text-amber-800 text-sm">Guest Wishlist</p>
@@ -49,7 +49,7 @@ export default function WishlistPage() {
 
         {/* Empty Wishlist State */}
         {wishlistItems.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm animate-scale-up">
             <span className="text-6xl block mb-4">❤️</span>
             <h2 className="text-xl font-extrabold text-slate-800 mb-2">Your wishlist is empty</h2>
             <p className="text-slate-500 text-sm mb-6">Explore our catalog and click the heart icon on items you like!</p>
@@ -64,7 +64,8 @@ export default function WishlistPage() {
           /* Wishlist Items Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {wishlistItems.map(item => (
-              <div key={item.id} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between group hover:shadow-md transition">
+              // Items display using clean scaling entrance and hover lift offsets
+              <div key={item.id} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between group hover:-translate-y-1.5 hover:shadow-md transition-all duration-300 animate-scale-up animation-fill-both">
                 <div>
                   {/* Image / Emoji display area */}
                   <Link href={`/product/${item.id}`} className="block relative h-48 bg-slate-50 flex items-center justify-center border-b border-slate-100 overflow-hidden">
@@ -72,7 +73,7 @@ export default function WishlistPage() {
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-full h-full object-cover group-hover:scale-102 transition duration-200"
+                        className="w-full h-full object-cover group-hover:scale-104 transition duration-500"
                       />
                     ) : (
                       <span className="text-5xl">{item.icon}</span>
