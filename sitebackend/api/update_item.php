@@ -1,4 +1,6 @@
 <?php
+// Secure endpoint check
+require_once '../includes/api_auth_check.php';
 // Include database connection settings
 require_once '../config.php';
 

@@ -1,6 +1,6 @@
 <?php
 // Start session and load database configuration
-session_start();
+require_once 'includes/auth_check.php';
 require_once 'config.php';
 
 // Categories list configuration helper
@@ -119,7 +119,7 @@ $gradient_presets = [
     <?php include 'includes/sidebar.php'; ?>
 
     <!-- Main Workspace dashboard area -->
-    <div class="flex-grow flex-1 ml-0 lg:ml-72 p-4 sm:p-8 lg:p-10 max-w-full flex flex-col gap-8">
+    <div class="flex-grow flex-1 ml-0 lg:ml-72 p-4 sm:p-8 lg:p-10 max-w-full flex flex-col gap-8 animate-fade-in">
         <div class="flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Item Management</h1>
@@ -135,10 +135,12 @@ $gradient_presets = [
         <div class="grid grid-cols-1 lg:grid-cols-[450px_1fr] gap-8 items-start">
             
             <!-- Left panel: Add form template include -->
-            <?php include 'includes/form.php'; ?>
+            <div class="w-full animate-scale-up">
+                <?php include 'includes/form.php'; ?>
+            </div>
 
             <!-- Right Panel: Displaying Existing Products Grid -->
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-6 animate-slide-up">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-bold text-slate-900" id="current-category-title">All Products</h3>
                     <span id="items-found-label" class="text-xs font-semibold text-slate-500 bg-slate-200/60 px-3 py-1 rounded-full">

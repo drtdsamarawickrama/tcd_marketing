@@ -1,4 +1,6 @@
 <?php
+// Secure endpoint check
+require_once '../includes/api_auth_check.php';
 // Delete banner API - removes a banner record and cleans up its uploaded image from disk
 require_once '../config.php';
 header("Content-Type: application/json; charset=UTF-8");

@@ -1,4 +1,6 @@
 <?php
+// Secure endpoint check
+require_once '../includes/api_auth_check.php';
 // Add banner API - inserts a new banner slide with optional image upload
 require_once '../config.php';
 header("Content-Type: application/json; charset=UTF-8");

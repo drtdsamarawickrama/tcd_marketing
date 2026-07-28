@@ -1,4 +1,6 @@
 <?php
+// Secure endpoint check
+require_once '../includes/api_auth_check.php';
 // Update banner API - updates an existing banner slide by ID with optional new image upload
 require_once '../config.php';
 header("Content-Type: application/json; charset=UTF-8");

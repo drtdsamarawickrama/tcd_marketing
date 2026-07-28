@@ -1,6 +1,6 @@
 <?php
 // Banners management page - admin panel for managing homepage hero slider slides
-session_start();
+require_once 'includes/auth_check.php';
 require_once 'config.php';
 
 // Categories for sidebar (reused from index.php)
@@ -23,7 +23,34 @@ $categories = [
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(15px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        scaleUp: {
+                            '0%': { transform: 'scale(0.97)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'scale-up': 'scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+                    }
+                }
+            }
+        }
     </script>
     <style>
         /* Active sidebar item indicator */
@@ -51,8 +78,8 @@ $categories = [
     <!-- Sidebar (reused) -->
     <?php include 'includes/sidebar.php'; ?>
 
-    <!-- Main Content Area -->
-    <div class="flex-grow flex-1 ml-0 lg:ml-72 p-4 sm:p-8 lg:p-10 max-w-full flex flex-col gap-8">
+    <!-- Main Content Area - fades in -->
+    <div class="flex-grow flex-1 ml-0 lg:ml-72 p-4 sm:p-8 lg:p-10 max-w-full flex flex-col gap-8 animate-fade-in">
 
         <!-- Page Header -->
         <div class="flex justify-between items-center">
@@ -64,8 +91,8 @@ $categories = [
 
         <div class="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-8 items-start">
 
-            <!-- Left Panel: Add / Edit Banner Form -->
-            <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col gap-5">
+            <!-- Left Panel: Add / Edit Banner Form - scales up -->
+            <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col gap-5 animate-scale-up">
                 <h2 class="text-lg font-extrabold text-slate-800" id="banner-form-title">Add New Banner Slide</h2>
 
                 <form id="banner-form" class="flex flex-col gap-4">
@@ -166,7 +193,7 @@ $categories = [
             </div>
 
             <!-- Right Panel: Existing Banners List -->
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 animate-slide-up">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-bold text-slate-900">Current Slides</h3>
                     <span id="banners-count-label" class="text-xs font-semibold text-slate-500 bg-slate-200/60 px-3 py-1 rounded-full">0 Slides</span>

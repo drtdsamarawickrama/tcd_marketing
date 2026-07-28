@@ -1,6 +1,18 @@
 <?php
 // PHP template for rendering sidebar navigation using Tailwind CSS
 ?>
+<style>
+    /* Hide scrollbar for Chrome, Safari, and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge, and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+</style>
+
 <div id="sidebar-menu" class="w-72 fixed top-0 left-0 h-screen bg-slate-900 text-slate-300 flex flex-col p-6 border-r border-slate-800 z-50 transition-all duration-300 -translate-x-full lg:translate-x-0">
     <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
         <h2 class="text-xl font-black tracking-tight text-white">TCD<span class="text-red-600"> Marketing</span></h2>
@@ -12,7 +24,7 @@
         </button>
     </div>
     
-    <ul class="flex flex-col gap-2 grow overflow-y-auto pr-1">
+    <ul class="flex flex-col gap-2 grow overflow-y-auto pr-1 no-scrollbar">
         <li class="category-item <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?> group flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-slate-800 hover:text-white transition duration-200 font-semibold text-sm text-slate-400" data-category="all">
             <div class="flex items-center gap-3">
                 <span class="text-lg">🏢</span>
@@ -58,7 +70,13 @@
         });
     </script>
 
-    <div class="pt-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <p>TCD Marketing Dashboard v1.0</p>
+    <div class="pt-4 border-t border-slate-800 flex flex-col gap-3">
+        <a href="logout.php" class="flex items-center justify-center gap-2 p-2.5 rounded-lg bg-red-950/20 hover:bg-red-900/40 border border-red-900/30 text-red-450 hover:text-red-300 transition duration-150 font-bold text-xs uppercase tracking-wider">
+            <span>🚪</span>
+            <span>Logout</span>
+        </a>
+        <div class="text-[10px] text-slate-600 text-center mt-1">
+            <p>TCD Marketing Dashboard v1.1</p>
+        </div>
     </div>
 </div>

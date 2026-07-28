@@ -1,6 +1,29 @@
 <?php
-// Start session and load database configuration
+// Load database configuration
 require_once '../config.php';
+
+// Enforce authentication only if database has already been setup with an admin user
+$enforce_auth = false;
+try {
+    $stmt = $pdo->query("SELECT COUNT(*) FROM `admins`");
+    $admin_count = $stmt->fetchColumn();
+    if ($admin_count > 0) {
+        $enforce_auth = true;
+    }
+} catch (PDOException $e) {
+    // Admins table doesn't exist yet, safe to proceed with first setup
+}
+
+if ($enforce_auth) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        http_response_code(401);
+        echo "<h3>❌ Access Denied: Unauthorized.</h3>Please log into the admin panel before re-initializing the database.";
+        exit();
+    }
+}
 
 // Set response type as HTML for readability in web browser
 header("Content-Type: text/html; charset=UTF-8");
@@ -136,6 +159,21 @@ try {
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     echo "✔ Users table ready (login/signup).<br>";
+
+    // Create admins table for backend administration
+    $pdo->exec("DROP TABLE IF EXISTS `admins`");
+    $pdo->exec("CREATE TABLE `admins` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `username` VARCHAR(100) NOT NULL UNIQUE,
+        `password` VARCHAR(255) NOT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Pre-populate default admin account (username: admin, password: admin123)
+    $adminHash = password_hash('admin123', PASSWORD_DEFAULT);
+    $admin_stmt = $pdo->prepare("INSERT INTO `admins` (username, password) VALUES (?, ?)");
+    $admin_stmt->execute(['admin', $adminHash]);
+    echo "✔ Admins table ready (default account created: admin / admin123).<br>";
 
     // Create cart_items table linked to users and items
     $pdo->exec("CREATE TABLE IF NOT EXISTS `cart_items` (
