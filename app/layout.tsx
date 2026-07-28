@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "TCD Marketing | Home Solutions, Electrics & Furniture Sri Lanka",
   description: "Explore high-quality furniture, electrics, home appliances, smart TVs, and home solutions at TCD Marketing. Smart Solutions, Better Living.",
+  icons: {
+    icon: "/logo.jpeg",
+  }
 };
 
 export default function RootLayout({
